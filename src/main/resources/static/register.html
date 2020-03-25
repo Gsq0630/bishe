@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册 - 右左网</title>
+    <link href="css/index.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+<!--    <script src="js/jquery-1.12.4.js"></script>-->
+    <script src="js/jquery-3.4.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/jquery.validate.js" type="application/javascript"></script>
+    <script src="js/jquery.validate.regex.js" type="application/javascript"></script>
+    <script>
+        $(function () {
+
+            $("#myForm").validate({
+                rules: {
+                    username: {
+                        required: true,
+                        regex: /^[\w|\u4e00-\u9fa5]{3,8}$/
+                    },
+                    password: {
+                        required: true,
+                        regex: /^\w{8,16}$/
+                    },
+                    age:{
+                        required:true,
+                        regex: /^[0-9]*$/
+                    },
+                    sex:{
+                    required:true,
+                    regex: /^男$|^女$/
+                    }
+                },
+                messages: {
+                    username: {
+                        required: "请输入昵称",
+                        regex: "昵称格式不正确"
+                    },
+                    password: {
+                        required: "请输入密码",
+                        regex: "密码格式不正确"
+                    },
+                    tel:{
+                        required:"请输入手机号",
+                        regex:"手机号格式不正确"
+                    }
+                },
+                submitHandler:function () {
+                    $.ajax({
+                        url:"http://localhost:8080/check",
+                        type:"post",
+                        data:{'username':$("input[name='username']").val(),'password':$("input[name='password']").val()},
+                        datatype:"text",
+                        success:function (data) {
+                            data == true ? location.href="show.html":alert("密码或用户名错误");
+                        }
+                    })
+                }
+                // $("input[type='button']").click(function () {
+                //     $.ajax({
+                //         url:"http://localhost:8080/check",
+                //         type:"post",
+                //         data:{'username':$("input[name='username']").val(),'password':$("input[name='password']").val()},
+                //         datatype:"text",
+                //         success:function (data) {
+                //             data == true ? location.href="show.html":alert("密码或用户名错误");
+                //         }
+                //     })
+                // })
+            });
+
+
+
+        });
+
+    </script>
+
+</head>
+<body>
+<div id="main" style="padding-top: 10px">
+    <div class="login_main">
+        <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="" style="color:#c9302c; font-size: 30px"><span
+                            class="glyphicon glyphicon-user"></span> 注册</a></li>
+                    <li><a href="login.html" style="color: #969696; font-size: 30px"><span
+                            class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <form id="myForm" class="bs-example bs-example-form" role="form">
+            <div class="account top">
+                <div class="input-group">
+                    <span class="input-group-addon">昵称 </span>
+                    <input type="text" class="form-control" name="username" placeholder="昵称格式为3-8个字符">
+                </div>
+            </div>
+            <div class="account">
+                <div class="input-group">
+                    <span class="input-group-addon">性别 </span>
+                    <input type="text" class="form-control" name="sex" placeholder="请输入性别，男或女">
+                </div>
+            </div>
+            <div class="account">
+                <div class="input-group">
+                    <span class="input-group-addon">年龄 </span>
+                    <input type="text" class="form-control" name="age" placeholder="请输入年龄">
+                </div>
+            </div>
+            <div class="account down">
+                <div class="input-group">
+                    <span class="input-group-addon">密码 </span>
+                    <input type="password" class="form-control" name="password" placeholder="密码格式为8-16位字符">
+                </div>
+            </div>
+        </form>
+        <div class="three btn btn-primary">注册
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

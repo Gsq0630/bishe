@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>share</title>
+    <link href="css/main.css" rel=stylesheet>
+    <link href="css/share.css" rel="stylesheet">
+    <script src="js/jquery-3.4.1.js"></script>
+    <script src="js/wangEditor.min.js"></script>
+    <link href="css/wangEditor.css" rel="stylesheet">
+
+
+    <script>
+        $(function () {
+
+            //wangEditor富文本编辑器
+            var E = window.wangEditor;
+            //这里的id为<div id="editor">中的id.
+            var editor = new E('#editorPic', '#editorText');
+            // var editor1 = new E('#div1', '#div2')  // 两个参数也可以传入 elem 对象，class 选择器
+            // 配置服务器端地址,也就是servlet的请求路径，不带项目路径，前面没有/
+            // editor.customConfig.uploadImgServer = 'uploadFile';
+            editor.customConfig.uploadImgShowBase64 = true;
+            editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
+            editor.customConfig.menus = [
+                'emoticon' // 表情
+            ];
+            //监控音乐的文字，实时更新到shareText
+            editor.customConfig.onchange = function (html) {
+                bigBox.shareText = html;
+            };
+            //创建编辑器
+            editor.create();
+
+            var editor1 = new E('#editorForwardEmoji', '#editorForwardText');
+            editor1.customConfig.menus = [
+                'emoticon' // 表情
+            ];
+            //监控转发的文字，试试更新到shareText
+            editor1.customConfig.onchange = function (html) {
+                bigBox.shareText = html;
+            };
+            editor1.create();
+
+            var editor2 = new E('#editorVideoPic', '#editorVideoText');
+            editor2.customConfig.menus = [
+                'emoticon' // 表情
+
+            ];
+            //监控转发的文字，试试更新到shareText
+            editor2.customConfig.onchange = function (html) {
+                bigBox.shareText = html;
+            };
+            editor2.create();
+
+            var editor3 = new E('#editorCommentEmoji', '#editorCommentText');
+            editor3.customConfig.menus = [
+                'emoticon' // 表情
+
+            ];
+            //监控转发的文字，试试更新到shareText
+            editor3.customConfig.onchange = function (html) {
+                bigBox.shareCommentText = html;
+            };
+            editor3.create();
+
+        })
+    </script>
+</head>
+<body style="background-color: #aaa; margin: 0;padding: 0">
+<iframe src="head.html" frameborder="0" width="100%" height="75px"></iframe>
+
+<!--发布音乐动态-->
+<div class="popWindow" id="shareMusicDiv" style="">
+    <form action="/share/shareMusicOrVideo" method="post" enctype="multipart/form-data" class="xiaoshi"
+          id="shareMusicForm">
+        <input class="xiaoshi" style="display: none;" v-model="shareText" type="text" name="shareText">
+        <input class="xiaoshi" style="display: none;" v-model="checkSongId" type="text" name="songId">
+        <input class="xiaoshi" style="display: none;" name="userId" type="text" v-model="userId">
+    </form>
+    <div class="popWindow-top">
+        <div class="font-14 f-w-b f-c-e">分享</div>
+        <div class="f-right"><a><i class="font-14 f-c-gold XXX" @click="shareMusicX">X</i></a></div>
+    </div>
+    <div class="share-text">
+        <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt" id="editorText">
+
+        </div>
+        <div class="f-thide">
+            <a @click="showSelectMusicDiv">
+                <div id="beforeChoseMusic">
+                    <i style="padding: 5px 5px; display: block" class="f-left">
+                        <img src="images/yuefu.png" height="30px"></i>
+                    <span class="f-fs1 f-fl">给动态配上音乐</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="f-tde">
+        <div style=" width: 40px;" id="editorPic" class="f-left"></div>
+        <a href="#" style="display: block;padding: 5px 10px;" class="f-left"><span class="f-left fileinput-button">
+            <img src="images/Picture.png" height="15px">
+            <input type="file" id="fileupload" name="file" form="shareMusicForm">
+            </span>
+        </a>
+    </div>
+    <div style="padding-left: 40px; line-height: 30px" id="img">预览</div>
+
+    <div class="btns">
+        <a>
+            <button class="btn-share btn f-left" style="font-size: 16px" type="submit" form="shareMusicForm">分享
+            </button>
+            <div class=" btn-share btn f-left btn-w" style="font-size: 16px" @click="shareMusicX">取消</div>
+        </a>
+    </div>
+
+
+</div>
+
+
+<div id="mainBody">
+    <div id="mB-left" class="f-left">
+        <div id="left-top">
+            <h3 class="f-left">动态</h3>
+            <span class="f-right btn"><a href="#" class="font-12"><img src="images/seX.png"
+                                                                       height="16px">发布视频</a></span>
+            <span class="f-right btn"><a href="#" class="font-12"><img src="images/dTai.png"
+                                                                       height="16px">发动态</a></span>
+        </div>
+        <div id="left-body">
+            <ul>
+                <!--分享视频-->
+                <li>
+                    <div class="userPic f-left">
+                        <a href="#">
+                            <img src="images/userPic.jpg" height="45">
+                        </a>
+                    </div>
+                    <div class="userShare f-left font-14 f-c-6">
+                        <div class="type">
+                            <a href="#" class="font-14">用户名</a>
+                            <img src="images/V.png" height="11">
+                            <span>发布视频</span>
+                        </div>
+                        <div class="time font-12">
+                            <a href="#">最近</a>
+                        </div>
+                        <div class="font-14 f-c-3 text">阳朔九叔民谣屋 翻唱：赵雷《理想》</div>
+
+                        <!--播放视频前，看到图片-->
+                        <a href="#">
+                            <div class="play-before">
+                                <div class="z-2 v-title">
+                                    <span class="font-12 f-c-e">视频标题</span>
+                                    <span class="font-12 f-c-6"> - by 用户名</span>
+                                </div>
+                                <div class="v-foot z-2">
+                                    <span class="f-left"><i><img src="images/v-play.png" height="15px"></i>播放数量</span>
+                                    <span class="f-right"><i><img src="images/sPing.png" height="15px"></i>视频长度</span>
+                                </div>
+                                <div class="v-pic z-0"><img src="images/mvPic.jpg" height="189"></div>
+                                <i id="yellow-play"><img src="images/play.png" height="40px"></i>
+                            </div>
+                        </a>
+
+                        <!--播放视频时-->
+                        <div class="video">
+                            <div>
+                                <span><i><img src="images/up.png" height="13px"></i><a href="#"
+                                                                                       class="font-12">收起</a></span>
+                                <span class="line">|</span>
+                                <span><i><img src="images/share.png" height="10px"></i><a href="#">  视频名</a><a href="#"
+                                                                                                               class="font-12"
+                                                                                                               style="color:#aaa;">  用户名</a></span>
+                            </div>
+                            <video width="565" height="318" controls="controls" autoplay="autoplay">
+                                <source src="video/04779b4b576f12e1ad22596461ca8002.mp4" type="video/mp4">
+                            </video>
+                        </div>
+
+                        <div class="s-foot">
+                            <div class="f-left">
+                                <span><img src="images/location.png" height="14px"><i class="f-c-d">厦门</i></span>
+                            </div>
+                            <div class="f-right">
+                                <span><a href="#" class="f-c-gold"><img src="images/thumbs.png"
+                                                                        height="14px">(<i>4455</i>)</a></span>
+                                <span class="line f-c-gold">|</span>
+                                <span><a href="#" class="f-c-gold">转发(<i>12</i>)</a></span>
+                                <span class="line f-c-gold">|</span>
+                                <span><a href="#" class="f-c-gold">评论(<i>12</i>)</a></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </li>
+
+                <!--分享音乐-->
+                <li>
+                    <div class="userPic f-left">
+                        <a href="#">
+                            <img src="images/userPic.jpg" height="45">
+                        </a>
+                    </div>
+                    <div class="userShare f-left font-14 f-c-6">
+                        <div class="type">
+                            <a href="#" class="font-14">用户名</a>
+                            <img src="images/V.png" height="11">
+                            <span>发布视频</span>
+                        </div>
+                        <div class="time font-12">
+                            <a href="#">最近</a>
+                        </div>
+                        <div class="font-14 f-c-3 text">阳朔九叔民谣屋 翻唱：赵雷《理想》</div>
+
+                        <div class="s-music">
+                            <div class="f-left">
+                                <a href="#">
+                                    <img src="images/userPic.jpg" height="45">
+                                    <img src="images/v-play.png" height="25" class="img-t">
+                                </a>
+                            </div>
+                            <div><a href="#"><h3 class="">歌名</h3></a></div>
+                            <div><a href="#"><h4 class="">歌手名</h4></a></div>
+
+                        </div>
+
+
+                        <div class=" z-0"><img src="images/mvPic.jpg" height="189"></div>
+                        <div class="s-foot">
+                            <div class="f-right">
+                                <span><a href="#" class="f-c-gold"><img src="images/thumbs.png"
+                                                                        height="14px">(<i>4455</i>)</a></span>
+                                <span class="line f-c-gold">|</span>
+                                <span><a href="#" class="f-c-gold">转发(<i>12</i>)</a></span>
+                                <span class="line f-c-gold">|</span>
+                                <span><a href="#" class="f-c-gold">评论(<i>12</i>)</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="mB-right" class="f-right">
+        <!--用户-->
+        <div class="user">
+            <div class="userPic">
+                <a href="#" id="face">
+                    <img src="images/userPic.jpg" height="70">
+                </a>
+                <a class="font-14 userName">用户名</a>
+            </div>
+            <ul class="u-fans">
+                <li class="f-left">
+                    <a href="#">
+                        <em>1</em>
+                        <i>动态</i>
+                    </a>
+                </li>
+                <li class="f-left">
+                    <a href="#">
+                        <em>1</em>
+                        <i>关注</i>
+                    </a>
+                </li>
+                <li class="f-left">
+                    <a href="#">
+                        <em>1</em>
+                        <i>粉丝</i>
+                    </a>
+                </li>
+
+
+            </ul>
+
+        </div>
+        <!--其他用户-->
+        <div class="otherUser">
+            <div class="starUser"><i class="font-12 f-w-b">明星用户</i><i class="f-right"><a class="font-12"
+                                                                                         href="#">换一批</a></i></div>
+            <div class="otherUser-div">
+                <div class="userPic f-left">
+                    <a href="#">
+                        <img src="images/userPic.jpg" height="45">
+                    </a>
+                </div>
+                <div class=" f-left font-14 f-c-6 otherUsername">
+                    <div class="type">
+                        <a href="#" class="font-14" style="color: black">用户名</a>
+                        <img src="images/V.png" height="11">
+                    </div>
+                    <div class="time font-12 ">
+                        <a href="#">唱作歌手</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn awh f-right"><i><img src="images/plus.png" height="12px"></i>关注</a>
+                    </div>
+                </div>
+            </div>
+            <div class="otherUser-div">
+                <div class="userPic f-left">
+                    <a href="#">
+                        <img src="images/userPic.jpg" height="45">
+                    </a>
+                </div>
+                <div class=" f-left font-14 f-c-6 otherUsername">
+                    <div class="type">
+                        <a href="#" class="font-14" style="color: black">用户名</a>
+                        <img src="images/V.png" height="11">
+                    </div>
+                    <div class="time font-12 ">
+                        <a href="#">唱作歌手</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn awh f-right"><i><img src="images/plus.png" height="12px"></i>关注</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="otherUser-div">
+                <div class="userPic f-left">
+                    <a href="#">
+                        <img src="images/userPic.jpg" height="45">
+                    </a>
+                </div>
+                <div class=" f-left font-14 f-c-6 otherUsername">
+                    <div class="type">
+                        <a href="#" class="font-14" style="color: black">用户名</a>
+                        <img src="images/V.png" height="11">
+                    </div>
+                    <div class="time font-12 ">
+                        <a href="#">唱作歌手</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn awh f-right"><i><img src="images/plus.png" height="12px"></i>关注</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="starUser"><i class="font-12 f-w-b">感兴趣的人</i><i class="f-right"><a class="font-12"
+                                                                                          href="#">换一批</a></i></div>
+            <div class="otherUser-div">
+                <div class="userPic f-left">
+                    <a href="#">
+                        <img src="images/userPic.jpg" height="45">
+                    </a>
+                </div>
+                <div class=" f-left font-14 f-c-6 otherUsername">
+                    <div class="type">
+                        <a href="#" class="font-14" style="color: black">用户名</a>
+                        <img src="images/V.png" height="11">
+                    </div>
+                    <div class="time font-12 ">
+                        <a href="#">唱作歌手</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn awh f-right"><i><img src="images/plus.png" height="12px"></i>关注</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="otherUser-div">
+                <div class="userPic f-left">
+                    <a href="#">
+                        <img src="images/userPic.jpg" height="45">
+                    </a>
+                </div>
+                <div class=" f-left font-14 f-c-6 otherUsername">
+                    <div class="type">
+                        <a href="#" class="font-14" style="color: black">用户名</a>
+                        <img src="images/V.png" height="11">
+                    </div>
+                    <div class="time font-12 ">
+                        <a href="#">唱作歌手</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn awh f-right"><i><img src="images/plus.png" height="12px"></i>关注</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="otherUser-div">
+                <div class="userPic f-left">
+                    <a href="#">
+                        <img src="images/userPic.jpg" height="45">
+                    </a>
+                </div>
+                <div class=" f-left font-14 f-c-6 otherUsername">
+                    <div class="type">
+                        <a href="#" class="font-14" style="color: black">用户名</a>
+                        <img src="images/V.png" height="11">
+                    </div>
+                    <div class="time font-12 ">
+                        <a href="#">唱作歌手</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn awh f-right"><i><img src="images/plus.png" height="12px"></i>关注</a>
+                    </div>
+                </div>
+            </div>
+            <div><i class="font-12 f-w-b">添加微博好友，和他们分享音乐</i></div>
+            <div>
+                <i><img src="images/Weibo.png" height="20px" class="weibo"></i>
+                <a href="#" class="btn xlwb f-right">绑定新浪微博</a>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+<a href="#" class="z-2 backTop btn"><i><img src="images/goup.png" height="10px"></i><br>Top</a>
+</body>
+</html>

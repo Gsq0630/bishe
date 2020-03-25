@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+
+spring:
+  datasource:
+    username: root
+    password: GCD995love.
+    url: jdbc:mysql://116.62.117.207:3306/music?characterEncoding=utf-8
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:org/lanqiao/mapper/*.xml
+  type-aliases-package: org.lanqiao.entity
+
+
+
+
+#showSql
+logging:
+  level:
+    org:
+      lanqiao:
+        myjd :
+          mapper: debug
+

@@ -1,0 +1,42 @@
+.login_main {
+    width: 420px;
+    height: 540px;
+    background-color: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border-radius: 20px;
+    padding: 50px 50px 30px;
+}
+.account{
+    width: 300px;
+    /*height: 60px;*/
+    background-color: rgba(181,181,181,0.1);
+    margin:  0 auto;
+    border: 1px #c8c8c8 solid;
+}
+.top {
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    margin-top: 60px;
+}
+.down{
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-bottom: 20px;
+}
+.input-group span,.input-group input{
+    height: 58px;
+    border: none;
+}
+.login_main .three{
+    width: 280px;
+    height: 50px;
+    margin: 20px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 25px;
+}
+.error{
+    color: red;
+}

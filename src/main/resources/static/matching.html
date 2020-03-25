@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>右左网-匹配</title>
+    <link href="css/chat.css" rel="stylesheet">
+    <script src="js/chat.js"></script>
+    <link href="css/matching.css" rel="stylesheet">
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery-3.4.1.js"></script>
+    <link href="css/index.css" rel="stylesheet">
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/wangEditor.min.js"></script>
+    <link href="css/wangEditor.css" rel="stylesheet">
+    <script src="js/mathching.js" ></script>
+    <style>
+        .displayNone{
+            display: none;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0 ">
+<div id="main">
+    <div id="topDiv">
+        <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <img src="images/logo.png" width="40" height="40">
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                    <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div id="mainBody">
+        <div class="left-both">
+            <div class="left-title" id="match">匹配</div>
+            <div class="left-title" id="chat">聊天</div>
+        </div>
+
+        <div id="mainBody-1" >
+            <img src="images/111.png" class="zhuanzhuan" width="60px">
+            <div class="main-little">
+                <div class="choosePeo">
+                    <div class="sex">
+                        性别:
+                    </div>
+                    <div class="col-lg-2">
+                        <select class="form-control" οnchange="selectOnchang(this)" style="width:90px">
+                            <option>男</option>
+                            <option>女</option>
+                            <option>都行</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="choosePeo">
+                    <div class="sex">
+                        年龄:
+                    </div>
+                    <div class="col-lg-2">
+                        <select class="form-control" οnchange="selectOnchang(this)" style="width:90px">
+                            <option>18-20</option>
+                            <option>20-30</option>
+                            <option>都行</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="start" style="z-index: 100">
+                    <button type="button" class="btn  btn-default" style="z-index: 100">开始匹配</button>
+                </div>
+        </div>
+
+    </div>
+        <div id="mainBody-2" class="displayNone">
+            <div style="float:left;" >
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="active"><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
+                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
+                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
+                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
+                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
+                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
+
+                </ul>
+            </div>
+<!--            <iframe src="chat.html" frameborder="0" width="610px" height="510px" style="float:left;"></iframe>-->
+            <div class="talk_con" style="float:left;">
+                <div class="talk_show" id="words">
+                    <div class="atalk"><span id="asay">A说：吃饭了吗？</span></div>
+                    <div class="btalk"><span id="bsay">B说：还没呢，你呢？</span></div>
+                </div>
+                <div class="talk_input">
+                    <div id="emoji" style="width: 30px;margin-top: 9px; float: left"></div>
+                    <div placeholder="一起聊聊吧~" data-action="txt" id="editorText">
+
+                    </div>
+                    <input type="button" value="发送" class="talk_sub" id="talksub" style="margin-top: 9px">
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+</body>
+</html>

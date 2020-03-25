@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+# solr配置
+data:
+  solr:
+    host: http://localhost:8983/solr
+
+
+

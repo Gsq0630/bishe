@@ -1,0 +1,69 @@
+#mainBody{
+    width: 980px;
+    height: 700px;
+    margin: auto;
+    /*background-color: #a94442;*/
+    /*background: url("../images/111.png");*/
+}
+#mainBody-1{
+    width: 600px;
+    height: 550px;
+    /*background: url("../images/111.png");*/
+    background-size: cover;
+    margin: auto;
+    padding-top: 170px;
+}
+.sex{
+    float: left;
+    text-align: center;
+    line-height: 36px;
+    font-size: 20px;
+}
+.left-title{
+    height: 100px;
+    width: 150px;
+    background-color: #6e8ef4;
+    text-align: center;
+    font-size: 40px;
+    line-height: 100px;
+    color: #eeeeee;
+}
+.left-title:hover{
+    background-color: #eeeeee;
+    color: #6e8ef4;
+}
+.left-both{
+    width: 150px;
+    margin-top: 170px;
+    float: left;
+}
+.main-little{
+    width: 200px;
+    height: 200px;
+    /*background-color: #8a6d3b;*/
+    margin: auto;
+    padding: 10px;
+}
+.choosePeo{
+    height: 38px;
+    padding: 0 20px;
+}
+.start{
+    height: 80px;
+    padding: 30px 20px 20px 55px;
+}
+#mainBody-2{
+    float:left;width: 800px; background-color: #eeeeee; padding:30px 0 30px 30px; margin-top: 20px;
+}
+.Rotation {
+    -webkit-transform: rotate(360deg);
+    animation: rotation 8s linear infinite;
+    -moz-animation: rotation 8s linear infinite;
+    -webkit-animation: rotation 8s linear infinite;
+    -o-animation: rotation 8s linear infinite;
+}
+.zhuanzhuan{
+    z-index: 0;
+    margin: 10px 280px;
+}
+

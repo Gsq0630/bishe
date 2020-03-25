@@ -1,0 +1,90 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+#main {
+    width: 1519px;
+    height: 800px;
+    background: url(../images/bjbj.jpg);
+    margin: 0;
+    /*padding-top: 10px;*/
+}
+#topDiv{
+    height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding: 5px 150px;
+}
+
+.navbar .container-fluid .nav a{
+    color: #eee;
+    opacity: 0.8;
+    font-size: large;
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+.navbar .container-fluid .nav a:hover{
+    color: #fff;
+    opacity: 1;
+    border-bottom: 1px solid;
+}
+#centerDiv{
+    width: 100%;
+    height: 730px;
+    padding-top: 80px;
+}
+#centerDiv_main{
+    width: 1170px;
+    height: 150px;
+    margin: auto;
+    text-align: center;
+    /*background-color: #5e5e5e;*/
+    font-size: 50px;
+    color: #eee;
+}
+
+#centerDiv_tow{
+    width: 650px;
+    height: 250px;
+    margin: auto;
+    padding-top: 30px;
+    text-align: center;
+}
+#centerDiv_tow .btn-warning{
+    width: 250px;
+    height: 200px;
+    float: left;
+    margin-left: 50px;
+    background-color: #e2caa0;
+    opacity: 1;
+    border: #e2caa0;
+    padding-top: 20px;
+}
+#centerDiv_tow div:hover{
+    opacity: 0.9;
+}
+#centerDiv_tow .btn-success{
+    width: 250px;
+    height: 200px;
+    float: left;
+    margin-left: 50px;
+    background-color: #00de64;
+    opacity: 1;
+    border: #00de64;
+    padding-top: 20px;
+}
+#centerDiv_tow .btn-success h1{
+    font-size: 60px;
+    color: #ffffff;
+}
+#centerDiv_tow .btn-warning h1{
+    font-size: 60px;
+    color: #ffffff;
+}
+#centerDiv_main div{
+    font-size: 20px;
+    color: #eee;
+    padding-top: 10px;
+}

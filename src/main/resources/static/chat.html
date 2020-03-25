@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/wangEditor.min.js"></script>
+    <link href="css/wangEditor.css" rel="stylesheet">
+    <style type="text/css">
+        #editorText{
+            float: left;
+            width: 450px;
+            margin-left: 10px;
+            border: #777777 1px solid;
+        }
+        .talk_con{
+            width:600px;
+            height:500px;
+            border:1px solid #666;
+            /*margin:50px auto 0;*/
+            background:#f9f9f9;
+        }
+        .talk_show{
+            width:580px;
+            height:420px;
+            border:1px solid #666;
+            background:#fff;
+            margin:10px auto 0;
+            overflow:auto;
+        }
+        .talk_input{
+            width:580px;
+            margin:10px auto 0;
+        }
+        .whotalk{
+            width:80px;
+            height:30px;
+            float:left;
+            outline:none;
+        }
+        .talk_word{
+            width:420px;
+            height:26px;
+            padding:0px;
+            float:left;
+            margin-left:10px;
+            outline:none;
+            text-indent:10px;
+        }
+        .talk_sub{
+            width:56px;
+            height:30px;
+            float:left;
+            margin-left:10px;
+        }
+        .atalk{
+            margin:10px;
+        }
+        .atalk span{
+            display:inline-block;
+            background:#0181cc;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
+        .btalk{
+            margin:10px;
+            text-align:right;
+        }
+        .btalk span{
+            display:inline-block;
+            background:#ef8201;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        //
+        window.onload = function(){
+            var Words = document.getElementById("words");
+            var Who = document.getElementById("who");
+            var TalkWords = document.getElementById("talkwords");
+            var TalkSub = document.getElementById("talksub");
+            // var innerHTML = Words.innerHTML;
+            Words.innerHTML = "";
+
+
+            //wangEditor富文本编辑器
+            var E = window.wangEditor;
+            //这里的id为<div id="editor">中的id.
+            var editor = new E('#emoji', '#editorText');
+            // var editor1 = new E('#div1', '#div2')  // 两个参数也可以传入 elem 对象，class 选择器
+            // 配置服务器端地址,也就是servlet的请求路径，不带项目路径，前面没有/
+            // editor.customConfig.uploadImgServer = 'uploadFile';
+            editor.customConfig.uploadImgShowBase64 = true;
+            editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
+            editor.customConfig.menus = [
+                'emoticon' // 表情
+            ];
+            //监控音乐的文字，实时更新到shareText
+            editor.customConfig.onchange = function (html) {
+                bigBox.shareText = html;
+            };
+            //创建编辑器
+            editor.create();
+
+            TalkSub.onclick = function(){
+                //定义空字符串
+                var str = "";
+                if(TalkWords.value == ""){
+                    // 消息为空时弹窗
+                    alert("消息不能为空");
+                    return;
+                }
+                if(Who.value == 0){
+                    //如果Who.value为0n那么是 A说
+                    str = '<div class="atalk"><span>A说 :' + TalkWords.value +'</span></div>';
+                }
+                else{
+                    str = '<div class="btalk"><span>B说 :' + TalkWords.value +'</span></div>' ;
+                }
+                Words.innerHTML = Words.innerHTML + str;
+                // innerHTML = ;
+            }
+
+        }
+
+
+    </script>
+</head>
+<body style="margin: 0;padding: 0">
+<div class="talk_con">
+    <div class="talk_show" id="words">
+        <div class="atalk"><span id="asay">A说：吃饭了吗？</span></div>
+        <div class="btalk"><span id="bsay">B说：还没呢，你呢？</span></div>
+    </div>
+    <div class="talk_input">
+        <div id="emoji" style="width: 30px;margin-top: 9px; float: left"></div>
+        <div placeholder="一起聊聊吧~" data-action="txt" id="editorText">
+
+        </div>
+        <input type="button" value="发送" class="talk_sub" id="talksub" style="margin-top: 9px">
+    </div>
+</div>
+</body>
+</html>
