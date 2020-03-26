@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qingda.lr.mapper.ShareMapper" >
+  <resultMap id="BaseResultMap" type="com.qingda.lr.entity.Share" >
+    <id column="share_id" property="shareId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="share_text" property="shareText" jdbcType="VARCHAR" />
+    <result column="share_title" property="shareTitle" jdbcType="VARCHAR" />
+    <result column="share_annex_url" property="shareAnnexUrl" jdbcType="VARCHAR" />
+    <result column="share_location" property="shareLocation" jdbcType="VARCHAR" />
+    <result column="share_likes" property="shareLikes" jdbcType="INTEGER" />
+    <result column="share_from_id" property="shareFromId" jdbcType="INTEGER" />
+    <result column="share_time" property="shareTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    share_id, user_id, share_text, share_title, share_annex_url, share_location, share_likes, 
+    share_from_id, share_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from share
+    where share_id = #{shareId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from share
+    where share_id = #{shareId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qingda.lr.entity.Share" >
+    insert into share (share_id, user_id, share_text, 
+      share_title, share_annex_url, share_location, 
+      share_likes, share_from_id, share_time
+      )
+    values (#{shareId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{shareText,jdbcType=VARCHAR}, 
+      #{shareTitle,jdbcType=VARCHAR}, #{shareAnnexUrl,jdbcType=VARCHAR}, #{shareLocation,jdbcType=VARCHAR}, 
+      #{shareLikes,jdbcType=INTEGER}, #{shareFromId,jdbcType=INTEGER}, #{shareTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qingda.lr.entity.Share" >
+    insert into share
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shareId != null" >
+        share_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="shareText != null" >
+        share_text,
+      </if>
+      <if test="shareTitle != null" >
+        share_title,
+      </if>
+      <if test="shareAnnexUrl != null" >
+        share_annex_url,
+      </if>
+      <if test="shareLocation != null" >
+        share_location,
+      </if>
+      <if test="shareLikes != null" >
+        share_likes,
+      </if>
+      <if test="shareFromId != null" >
+        share_from_id,
+      </if>
+      <if test="shareTime != null" >
+        share_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shareId != null" >
+        #{shareId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="shareText != null" >
+        #{shareText,jdbcType=VARCHAR},
+      </if>
+      <if test="shareTitle != null" >
+        #{shareTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="shareAnnexUrl != null" >
+        #{shareAnnexUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="shareLocation != null" >
+        #{shareLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="shareLikes != null" >
+        #{shareLikes,jdbcType=INTEGER},
+      </if>
+      <if test="shareFromId != null" >
+        #{shareFromId,jdbcType=INTEGER},
+      </if>
+      <if test="shareTime != null" >
+        #{shareTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qingda.lr.entity.Share" >
+    update share
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="shareText != null" >
+        share_text = #{shareText,jdbcType=VARCHAR},
+      </if>
+      <if test="shareTitle != null" >
+        share_title = #{shareTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="shareAnnexUrl != null" >
+        share_annex_url = #{shareAnnexUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="shareLocation != null" >
+        share_location = #{shareLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="shareLikes != null" >
+        share_likes = #{shareLikes,jdbcType=INTEGER},
+      </if>
+      <if test="shareFromId != null" >
+        share_from_id = #{shareFromId,jdbcType=INTEGER},
+      </if>
+      <if test="shareTime != null" >
+        share_time = #{shareTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where share_id = #{shareId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qingda.lr.entity.Share" >
+    update share
+    set user_id = #{userId,jdbcType=INTEGER},
+      share_text = #{shareText,jdbcType=VARCHAR},
+      share_title = #{shareTitle,jdbcType=VARCHAR},
+      share_annex_url = #{shareAnnexUrl,jdbcType=VARCHAR},
+      share_location = #{shareLocation,jdbcType=VARCHAR},
+      share_likes = #{shareLikes,jdbcType=INTEGER},
+      share_from_id = #{shareFromId,jdbcType=INTEGER},
+      share_time = #{shareTime,jdbcType=TIMESTAMP}
+    where share_id = #{shareId,jdbcType=INTEGER}
+  </update>
+</mapper>

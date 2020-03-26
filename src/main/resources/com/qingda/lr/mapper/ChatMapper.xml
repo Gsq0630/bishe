@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qingda.lr.mapper.ChatMapper" >
+  <resultMap id="BaseResultMap" type="com.qingda.lr.entity.Chat" >
+    <result column="user_id_a" property="userIdA" jdbcType="INTEGER" />
+    <result column="user_id_b" property="userIdB" jdbcType="INTEGER" />
+    <result column="chat_text" property="chatText" jdbcType="VARCHAR" />
+    <result column="chat_time" property="chatTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="com.qingda.lr.entity.Chat" >
+    insert into chat (user_id_a, user_id_b, chat_text, 
+      chat_time)
+    values (#{userIdA,jdbcType=INTEGER}, #{userIdB,jdbcType=INTEGER}, #{chatText,jdbcType=VARCHAR}, 
+      #{chatTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qingda.lr.entity.Chat" >
+    insert into chat
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userIdA != null" >
+        user_id_a,
+      </if>
+      <if test="userIdB != null" >
+        user_id_b,
+      </if>
+      <if test="chatText != null" >
+        chat_text,
+      </if>
+      <if test="chatTime != null" >
+        chat_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userIdA != null" >
+        #{userIdA,jdbcType=INTEGER},
+      </if>
+      <if test="userIdB != null" >
+        #{userIdB,jdbcType=INTEGER},
+      </if>
+      <if test="chatText != null" >
+        #{chatText,jdbcType=VARCHAR},
+      </if>
+      <if test="chatTime != null" >
+        #{chatTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>
