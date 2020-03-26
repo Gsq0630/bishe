@@ -11,7 +11,7 @@
 
 	<typeAliases>
 		<package name="java.lang"/>
-		<package name="org.lanqiao.entity"/>
+		<package name="com.qingda.lr.entity"/>
 	</typeAliases>
 
 	<!-- development : 开发模式 work : 工作模式 -->

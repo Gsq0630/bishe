@@ -1,5 +1,7 @@
 package com.qingda.lr.entity;
 
+import java.util.Date;
+
 public class User {
     private Integer userId;
 
@@ -7,13 +9,23 @@ public class User {
 
     private String userSex;
 
-    private Integer userAge;
+    private Date userBirthday;
 
     private String userPic;
 
     private String userPassword;
 
     private Integer userAccount;
+
+    private String userBirStr;
+
+    public String getUserBirStr() {
+        return userBirStr;
+    }
+
+    public void setUserBirStr(String userBirStr) {
+        this.userBirStr = userBirStr;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -39,12 +51,12 @@ public class User {
         this.userSex = userSex == null ? null : userSex.trim();
     }
 
-    public Integer getUserAge() {
-        return userAge;
+    public Date getUserBirthday() {
+        return userBirthday;
     }
 
-    public void setUserAge(Integer userAge) {
-        this.userAge = userAge;
+    public void setUserBirthday(Date userBirthday) {
+        this.userBirthday = userBirthday;
     }
 
     public String getUserPic() {

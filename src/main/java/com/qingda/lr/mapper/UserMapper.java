@@ -1,7 +1,11 @@
 package com.qingda.lr.mapper;
 
 import com.qingda.lr.entity.User;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
+@Mapper
+@Repository
 public interface UserMapper {
     int deleteByPrimaryKey(Integer userId);
 
@@ -14,4 +18,6 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    User login(User user);
 }

@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qingda.lr.mapper.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.qingda.lr.entity.User" >
+  <resultMap id="UserResultMap" type="com.qingda.lr.entity.User" >
     <id column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="user_sex" property="userSex" jdbcType="VARCHAR" />
-    <result column="user_age" property="userAge" jdbcType="INTEGER" />
+    <result column="user_birthday" property="userBirthday" jdbcType="TIMESTAMP" />
     <result column="user_pic" property="userPic" jdbcType="VARCHAR" />
     <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
     <result column="user_account" property="userAccount" jdbcType="INTEGER" />
   </resultMap>
+
+  <select id="login" resultMap="com.qingda.lr.entity.User" parameterType="com.qingda.lr.entity.User">
+    select user_id from user where user_account = #{userAccount} and user_password = #{userPassword}
+  </select>
+
   <sql id="Base_Column_List" >
-    user_id, user_name, user_sex, user_age, user_pic, user_password, user_account
+    user_id, user_name, user_sex, user_birthday, user_pic, user_password, user_account
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="UserResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from user
@@ -25,10 +30,10 @@
   </delete>
   <insert id="insert" parameterType="com.qingda.lr.entity.User" >
     insert into user (user_id, user_name, user_sex, 
-      user_age, user_pic, user_password, 
+      user_birthday, user_pic, user_password, 
       user_account)
     values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{userSex,jdbcType=VARCHAR}, 
-      #{userAge,jdbcType=INTEGER}, #{userPic,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
+      #{userBirthday,jdbcType=TIMESTAMP}, #{userPic,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR}, 
       #{userAccount,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.qingda.lr.entity.User" >
@@ -43,8 +48,8 @@
       <if test="userSex != null" >
         user_sex,
       </if>
-      <if test="userAge != null" >
-        user_age,
+      <if test="userBirthday != null" >
+        user_birthday,
       </if>
       <if test="userPic != null" >
         user_pic,
@@ -66,8 +71,8 @@
       <if test="userSex != null" >
         #{userSex,jdbcType=VARCHAR},
       </if>
-      <if test="userAge != null" >
-        #{userAge,jdbcType=INTEGER},
+      <if test="userBirthday != null" >
+        #{userBirthday,jdbcType=TIMESTAMP},
       </if>
       <if test="userPic != null" >
         #{userPic,jdbcType=VARCHAR},
@@ -89,8 +94,8 @@
       <if test="userSex != null" >
         user_sex = #{userSex,jdbcType=VARCHAR},
       </if>
-      <if test="userAge != null" >
-        user_age = #{userAge,jdbcType=INTEGER},
+      <if test="userBirthday != null" >
+        user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
       </if>
       <if test="userPic != null" >
         user_pic = #{userPic,jdbcType=VARCHAR},
@@ -108,7 +113,7 @@
     update user
     set user_name = #{userName,jdbcType=VARCHAR},
       user_sex = #{userSex,jdbcType=VARCHAR},
-      user_age = #{userAge,jdbcType=INTEGER},
+      user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
       user_pic = #{userPic,jdbcType=VARCHAR},
       user_password = #{userPassword,jdbcType=VARCHAR},
       user_account = #{userAccount,jdbcType=INTEGER}

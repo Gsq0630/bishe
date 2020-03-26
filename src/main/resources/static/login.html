@@ -8,6 +8,44 @@
     <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="js/jquery-1.12.4.js"></script>
     <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/jquery.validate.js" type="application/javascript"></script>
+    <script src="js/jquery.validate.regex.js" type="application/javascript"></script>
+    <script>
+        $(function () {
+            $("#myForm").validate({
+                rules: {
+                    username: {
+                        required: true
+                    },
+                    password: {
+                        required: true
+                    }
+                },
+                messages: {
+                    username: {
+                        required: "请输入账号"
+                    },
+                    password: {
+                        required: "请输入密码"
+                    }
+                },
+                submitHandler: function () {
+                    $.ajax({
+                        url: "http://localhost:8080/user/login",
+                        type: "post",
+                        data: {
+                            'userAccount': $("input[name='username']").val(),
+                            'userPassword': $("input[name='password']").val(),
+                        },
+                        datatype: "text",
+                        success: function (data) {
+                            data == 0 ? alert("登录失败") : alert("登录成功");
+                        }
+                    })
+                }
+            })
+        })
+    </script>
 </head>
 <body>
 <div id="main" style="padding-top: 10px">
@@ -23,22 +61,21 @@
             </div>
         </nav>
 
-        <form class="bs-example bs-example-form" role="form">
+        <form id="myForm" class="bs-example bs-example-form" role="form">
             <div class="account top">
                 <div class="input-group">
                     <span class="input-group-addon">账号</span>
-                    <input type="text" class="form-control" placeholder="请输入昵称或者账号">
+                    <input type="text" class="form-control" name="username" placeholder="请输入账号">
                 </div>
             </div>
             <div class="account down">
                 <div class="input-group">
                     <span class="input-group-addon">密码</span>
-                    <input type="text" class="form-control" placeholder="请输入密码">
+                    <input type="text" class="form-control" name="password" placeholder="请输入密码">
                 </div>
             </div>
         </form>
-        <div class="three btn btn-primary">登录
-        </div>
+        <input form="myForm" id="login" type="submit" class="three btn btn-primary" value="登录"/>
 
 
 
