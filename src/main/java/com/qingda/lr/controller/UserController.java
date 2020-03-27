@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class UserController {
 
@@ -18,9 +20,13 @@ public class UserController {
     }
 
     @RequestMapping("/user/login")
-    public int login(User user){
+    public int login(User user , HttpServletResponse response){
         return userService.login(user);
     }
 
+    @RequestMapping("/user/getUserPic")
+    public String getUserPic(Integer userId){
+        return userService.getUserPic(userId);
+    }
 
 }

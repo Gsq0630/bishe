@@ -88,3 +88,18 @@ body {
     color: #eee;
     padding-top: 10px;
 }
+#changeData{
+    width: 1000px;
+    height: 650px;
+    padding: 80px;
+    margin: auto;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.account{
+    width: 300px;
+    /*height: 60px;*/
+    background-color: rgba(181,181,181,0.1);
+    margin:  0 auto;
+    border: 1px #c8c8c8 solid;
+}

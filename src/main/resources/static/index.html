@@ -7,6 +7,37 @@
     <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="js/jquery-1.12.4.js"></script>
     <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script>
+        $(function () {
+
+            var userId = $.cookie("userId");
+            if (userId === undefined){
+                userId = 0;
+                $("#userPicA").hide();
+                $("#reg_login").show();
+            }else{
+                $("#reg_login").hide();
+                $("#userPicA").show();
+                $.ajax({
+                    url:"http://localhost:8080/user/getPic",
+                    type: "post",
+                    data: {
+                        'userId': userId
+                    },
+                    datatype: "text",
+                    success: function (data) {
+                        $("userPic").attr("src",data);
+                    }
+                });
+                $("#userPic").click(function () {
+                    $("#centerDiv").hide();
+                })
+            }
+
+        })
+    </script>
 </head>
 <body style="margin: 0; padding: 0 ">
 <div id="main">
@@ -16,14 +47,15 @@
                 <div class="navbar-header">
                     <img src="images/logo.png" width="40" height="40">
                 </div>
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" id="reg_login">
                     <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
                     <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                 </ul>
+                <a href="#" id="userPicA"><img id="userPic" src="images/userPic.png" width="43" style="float: right" data-toggle="tooltip" data-placement="bottom" title="修改资料"/></a>
             </div>
         </nav>
     </div>
-    <div id="centerDiv">
+    <div id="centerDiv" style="display: none">
         <div id="centerDiv_main">
             时下最流行的校园交友平台
             <div>加入我们开启你的右左交友之旅</div>
@@ -40,10 +72,39 @@
                 <div>分享生活<br>展现有趣的自己</div>
             </div>
         </div>
-
+    </div>
+    <div id="changeData">
+        <form id="myForm" class="bs-example bs-example-form" role="form">
+            <div class="account top">
+                <div class="input-group">
+                    <span class="input-group-addon">昵称 </span>
+                    <input type="text" class="form-control" name="username" placeholder="昵称格式为3-8个字符">
+                </div>
+            </div>
+            <div class="account">
+                <div class="input-group">
+                    <span class="input-group-addon">性别 </span>
+                    <input type="text" class="form-control" name="sex" placeholder="请输入性别，男或女">
+                </div>
+            </div>
+            <div class="account">
+                <div class="input-group">
+                    <span class="input-group-addon">生日 </span>
+                    <input type="date" style="width: 245px" name="age" placeholder="请输入生日"/>
+                </div>
+            </div>
+            <div class="account down">
+                <div class="input-group">
+                    <span class="input-group-addon">密码 </span>
+                    <input type="password" class="form-control" name="password" placeholder="密码格式为8-16位字符"/>
+                </div>
+            </div>
+        </form>
     </div>
 
 </div>
-
+<script>
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
 </body>
 </html>

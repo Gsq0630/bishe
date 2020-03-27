@@ -6,19 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
 
 @Service
 public class UserServiceImpl extends UserService {
 
     @Override
+    public String getUserPic(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        return user.getUserPic();
+    }
+
+    @Override
     public int login(User user) {
-        return userMapper.login(user).getUserId();
+        User user1 = userMapper.login(user);
+        return user1 == null ? 0 : user1.getUserId();
     }
 
     @Autowired
     UserMapper userMapper;
+
 
     @Override
     public int insertUser(User user) {
