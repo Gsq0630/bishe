@@ -1,13 +1,20 @@
 package com.qingda.lr.service;
 
 import com.qingda.lr.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
-public abstract class UserService {
-    public abstract int insertUser(User user);
+public interface  UserService {
+    int insertUser(User user);
 
-    public abstract int login(User user);
+    int login(User user);
 
-    public abstract String getUserPic(Integer userId);
+    String getUserPic(Integer userId);
+
+    User getUserData(Integer userId);
+
+    int changeUserData(User user, MultipartFile file);
+
+    int changeUserPass(User user);
 }

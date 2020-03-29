@@ -11,6 +11,12 @@
     <result column="user_account" property="userAccount" jdbcType="INTEGER" />
   </resultMap>
 
+  <update id="changeUserPass" parameterType="com.qingda.lr.entity.User" >
+    update user
+    set user_password = #{userNewPass,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER} and user_password = #{userPassword,jdbcType=VARCHAR}
+  </update>
+
   <select id="login" resultMap="UserResultMap" parameterType="com.qingda.lr.entity.User">
     select user_id from user where user_account = #{userAccount, jdbcType=INTEGER} and user_password = #{userPassword, jdbcType=VARCHAR}
   </select>

@@ -2,14 +2,26 @@ package com.qingda.lr.service;
 
 import com.qingda.lr.entity.User;
 import com.qingda.lr.mapper.UserMapper;
+import com.qingda.lr.until.FileUploadGsq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 @Service
-public class UserServiceImpl extends UserService {
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    UserMapper userMapper;
+
+
+    @Override
+    public int changeUserPass(User user) {
+        return userMapper.changeUserPass(user);
+    }
 
     @Override
     public String getUserPic(Integer userId) {
@@ -18,14 +30,39 @@ public class UserServiceImpl extends UserService {
     }
 
     @Override
+    public int changeUserData(User user, MultipartFile file) {
+        int result = 0;
+        try {
+            user.setUserBirthday(getBirthday(user.getUserBirStr()));
+            if (!file.isEmpty()){
+                user.setUserPic(new FileUploadGsq().uploadToDisk(file));
+            }
+            result = userMapper.updateByPrimaryKeySelective(user);
+        }catch (Exception e){
+            e.printStackTrace();
+            result = 0;
+        }
+        return result;
+    }
+
+    @Override
+    public User getUserData(Integer userId) {
+        if (userId == null || userId == 0){
+            return null;
+        }
+        User user = userMapper.selectByPrimaryKey(userId);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        if (user.getUserBirthday() != null){
+            user.setUserBirStr(sdf.format(user.getUserBirthday()));
+        }
+        return user;
+    }
+
+    @Override
     public int login(User user) {
         User user1 = userMapper.login(user);
         return user1 == null ? 0 : user1.getUserId();
     }
-
-    @Autowired
-    UserMapper userMapper;
-
 
     @Override
     public int insertUser(User user) {
@@ -35,9 +72,9 @@ public class UserServiceImpl extends UserService {
         int account = random.nextInt(max)%(max-min+1) + min;
         user.setUserAccount(account);
         user.setUserPic("images/userPic.png");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try{
-            user.setUserBirthday(sdf.parse(user.getUserBirStr()));
+            user.setUserBirthday(getBirthday(user.getUserBirStr()));
             userMapper.insertSelective(user);
         }catch (Exception e){
             e.printStackTrace();
@@ -45,4 +82,10 @@ public class UserServiceImpl extends UserService {
         }
         return account;
     }
+
+    private Date getBirthday(String birStr) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.parse(birStr);
+    }
+
 }

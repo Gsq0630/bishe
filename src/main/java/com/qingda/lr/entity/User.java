@@ -19,6 +19,16 @@ public class User {
 
     private String userBirStr;
 
+    private String userNewPass;
+
+    public String getUserNewPass() {
+        return userNewPass;
+    }
+
+    public void setUserNewPass(String userNewPass) {
+        this.userNewPass = userNewPass;
+    }
+
     public String getUserBirStr() {
         return userBirStr;
     }

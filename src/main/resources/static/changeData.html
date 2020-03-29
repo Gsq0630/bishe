@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改个人资料</title>
+    <link href="css/changeData.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery-3.4.1.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="js/jquery.validate.js" type="application/javascript"></script>
+    <script src="js/jquery.validate.regex.js" type="application/javascript"></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+
+        function check(){
+            var name = /^[\w|\u4e00-\u9fa5]{3,8}$/;
+            if (!name.test($("#userName").val())){
+                alert("昵称格式不准确。");
+                return false;
+            }
+            if ($("#userBirStr").val() == null) {
+                alert("生日不能为空。");
+                return  false;
+            }
+            return true;
+        }
+
+
+        $(function () {
+
+            var userId = $.cookie("userId");
+            if (userId === undefined){
+                location.href = "index.html"
+            }
+
+            $("input[name=userId]").attr("value",userId);
+
+            //界面加载成功，获取用户信息
+            $.ajax({
+                url:"http://localhost:8080/user/getUserData",
+                type:"post",
+                datatype:"text",
+                data:{
+                    userId : userId
+                },
+                success: function (user) {
+                    $("input[name = userName]").attr("value", user.userName);
+                    var sex = $(":radio[name= sex]");
+                    if (user.userSex === "男") {
+                        sex.eq(0).attr("checked", true);
+                        sex.eq(1).attr("checked", false);
+                    }else{
+                        sex.eq(1).attr("checked", true);
+                        sex.eq(0).attr("checked", false);
+                    }
+                    $("input[name=userBirStr]").attr("value",user.userBirStr);
+                    $("#userPic").attr("src",user.userPic);
+                }
+            });
+
+            $("#myFormPassword").validate({
+                rules: {
+                    oldPassword: {
+                        required: true,
+                        regex: /^\w{8,16}$/
+                    },
+                    newPasswordA: {
+                        required: true,
+                        regex: /^\w{8,16}$/
+                    },
+                    newPasswordB: {
+                        required: true,
+                        regex: /^\w{8,16}$/
+                    }
+                },
+                messages: {
+
+                },
+                submitHandler:function () {
+                    var newPassA = $("input[name='newPassA']").val();
+                    var newPassB = $("input[name='newPassB']").val();
+                    if (newPassA !== newPassB){
+                        alert("两次新密码不一致");
+                    } else {
+                        $.ajax({
+                            url:"http://localhost:8080/user/changeUserPassword",
+                            type:"post",
+                            data:{
+                                'userId':userId,
+                                'userPassword':$("input[name='oldPassword']").val(),
+                                'userNewPass': newPassA,
+                            datatype:"text",
+                            success:function (data) {
+                                if (data === 1){
+                                    alert("修改成功。")
+                                }
+                            }
+                        }
+                    })
+                    }
+                }
+
+
+
+            });
+
+
+            $("input[type = file]").change(function () {
+                var file = $("input[type = file]").prop('files')[0];
+                var imgUrl = window.URL.createObjectURL(file);
+                $("#userPic").attr("src",imgUrl);
+            });
+
+            $(".changePassword").hide();
+
+            $("#changeData").click(function () {
+                $("#changeData").addClass("active");
+                $("#changePassword").removeClass("active");
+                $(".changeData").show();
+                $(".changePassword").hide();
+            });
+
+            $("#changePassword").click(function () {
+                $("#changePassword").addClass("active");
+                $("#changeData").removeClass("active");
+                $(".changeData").hide();
+                $(".changePassword").show();
+            });
+        })
+    </script>
+</head>
+<body>
+
+
+<ul class="nav nav-tabs">
+    <li class="active" id="changeData"><a href="#">修改个人资料</a></li>
+    <li id="changePassword"><a href="#">修改密码</a></li>
+
+</ul>
+<form id="myForm" class="bs-example bs-example-form changeData" onsubmit="return check()" role="form" action="/user/changeUserData" method="post" enctype="multipart/form-data">
+    <div class="account">
+        <div class="input-group">
+            <input type="text" name="userId" style="display: none">
+            <span class="input-group-addon">昵称 </span>
+            <input type="text" class="form-control" name="userName" placeholder="昵称格式为3-8个字符">
+        </div>
+    </div>
+    <div class="account">
+        <div class="input-group">
+            <span class="input-group-addon">性别 </span>
+            <div style="height: 58px; line-height: 58px; padding-left: 20px">
+                <input type="radio" name="userSex" style="height: 13px;" value="男" checked="checked">男
+                <input type="radio" name="userSex" style="height: 13px; margin-left: 20px" value="女"/>女
+            </div>
+
+        </div>
+    </div>
+    <div class="account">
+        <div class="input-group">
+            <span class="input-group-addon">生日 </span>
+            <input type="date" style="width: 245px" name="userBirStr" placeholder="请输入生日"/>
+        </div>
+    </div>
+</form>
+
+<div class="changePic changeData">
+    <img src="images/singer.jpg" height="130px" id="userPic">
+    <input type="file" id="fileUserPic" name="file" form="myForm" class="userPic" data-toggle="tooltip" data-placement="bottom" title="修改头像" accept="image/*">
+
+</div>
+<input type="submit" form="myForm" id="btnChangeData" class="btn btn-primary changeData" style="clear: left; margin-top: 10px; margin-left: 20px" value="保存修改">
+
+<form id="myFormPassword" class="bs-example bs-example-form changePassword" role="form">
+    <div class="account">
+        <div class="input-group">
+            <span class="input-group-addon">原始密码 </span>
+            <input type="password" class="form-control" name="oldPassword">
+        </div>
+    </div>
+    <div class="account">
+        <div class="input-group">
+            <span class="input-group-addon">新的密码 </span>
+            <input type="password" class="form-control" name="newPassA">
+        </div>
+    </div>
+    <div class="account">
+        <div class="input-group">
+            <span class="input-group-addon">新的密码 </span>
+            <input type="password" class="form-control" name="newPassB">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" id="btnChangePass" style="margin: 20px 110px">确认修改</button>
+</form>
+
+
+
+<script>
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
+</script>
+</body>
+</html>
