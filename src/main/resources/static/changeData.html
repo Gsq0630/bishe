@@ -80,8 +80,9 @@
                 submitHandler:function () {
                     var newPassA = $("input[name='newPassA']").val();
                     var newPassB = $("input[name='newPassB']").val();
+                    $(".tips").hide();
                     if (newPassA !== newPassB){
-                        alert("两次新密码不一致");
+                        $("#newPassError").show();
                     } else {
                         $.ajax({
                             url:"http://localhost:8080/user/changeUserPassword",
@@ -89,17 +90,19 @@
                             data:{
                                 'userId':userId,
                                 'userPassword':$("input[name='oldPassword']").val(),
-                                'userNewPass': newPassA,
+                                'userNewPass': newPassA
+                            },
                             datatype:"text",
                             success:function (data) {
                                 if (data === 1){
-                                    alert("修改成功。")
+
                                 }
+                                data === 1 ?  $("#changePassSuccess").show() : $("#changePassError").show();
                             }
-                        }
-                    })
+                        })
                     }
-                }
+                    }
+
 
 
 
@@ -171,7 +174,7 @@
 </div>
 <input type="submit" form="myForm" id="btnChangeData" class="btn btn-primary changeData" style="clear: left; margin-top: 10px; margin-left: 20px" value="保存修改">
 
-<form id="myFormPassword" class="bs-example bs-example-form changePassword" role="form">
+<form id="myFormPassword" class="bs-example bs-example-form changePassword" role="form" style="float: left">
     <div class="account">
         <div class="input-group">
             <span class="input-group-addon">原始密码 </span>
@@ -191,7 +194,11 @@
         </div>
     </div>
     <button type="submit" class="btn btn-primary" id="btnChangePass" style="margin: 20px 110px">确认修改</button>
+    <div id="changePassSuccess" class="tips" style="display: none"><p style="color: #0c73c2; font-size: 30px">修改成功</p></div>
+    <div id="changePassError" class="tips" style="display: none"><p style="color: #0c73c2; font-size: 30px">修改失败</p></div>
+    <div id="newPassError" class="tips" style="display: none"><p style="color: #0c73c2; font-size: 30px">两次新密码不一致</p></div>
 </form>
+
 
 
 
