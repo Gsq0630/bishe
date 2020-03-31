@@ -1,0 +1,42 @@
+.f-left{
+    float: left;
+}
+.sharePic{
+    width: 22px;
+    position: absolute;
+    top: 175px;
+    z-index: 1;
+    opacity: 0;
+}
+#mainDiv{
+    width: 1000px;
+    height: 100%;
+    padding: 20px 30px;
+    background-color: white;
+    border: 1px #C4C4C4 solid;
+    margin: auto;
+}
+ul{
+    margin: 0;
+    padding: 0;
+}
+li{
+    list-style-type: none;
+    width: auto;
+    height: auto;
+}
+#mainDivSon{
+    width: 700px;
+    margin: auto;
+    height: 100%;
+}
+a {
+    text-decoration: none;
+    color: #666666;
+}
+a:hover{
+    text-decoration: underline;
+}
+i{
+    font-style: normal;
+}

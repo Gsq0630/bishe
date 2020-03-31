@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态广场</title>
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/square.css" rel="stylesheet">
+    <link href="css/share.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/wangEditor.min.js"></script>
+    <link href="css/wangEditor.css" rel="stylesheet">
+    <script src="js/index.js"></script>
+    <script src="js/insertShare.js"></script>
+    <script>
+        $(function () {
+
+            var userId = $.cookie("userId");
+            if (userId === undefined){
+                location.href = "index.html"
+            }
+
+            //Vue
+            var insertShare = new Vue({
+                el: "#shareMusicDiv",
+                data:{
+                    shareText: "",
+                    userId:userId,
+                },
+                methods: {
+                    shareMusicX:function () {
+                        
+                    }
+                }
+            });
+
+            //wangEditor富文本编辑器
+            var E = window.wangEditor;
+            //这里的id为<div id="editor">中的id.
+            var editor = new E('#editorPic', '#editorText');
+            // var editor1 = new E('#div1', '#div2')  // 两个参数也可以传入 elem 对象，class 选择器
+            // 配置服务器端地址,也就是servlet的请求路径，不带项目路径，前面没有/
+            // editor.customConfig.uploadImgServer = 'uploadFile';
+            editor.customConfig.uploadImgShowBase64 = true;
+            editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
+            editor.customConfig.menus = [
+                'emoticon' // 表情
+            ];
+            //监控音乐的文字，实时更新到shareText
+            editor.customConfig.onchange = function (html) {
+                insertShare.shareText = html;
+            };
+            //创建编辑器
+            editor.create();
+
+
+            $("#fileupload").change(function () {
+                var file = $("#fileupload").prop('files')[0];
+                var imgUrl = window.URL.createObjectURL(file);
+                $("#img").attr("src", imgUrl);
+                $("#imgDiv").show();
+            })
+
+        })
+    </script>
+</head>
+<body style="margin: 0; padding: 0 ">
+<div id="main" style="display: none">
+    <div id="topDiv">
+        <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
+            <div class="container-fluid">
+                <div class="navbar-header" id="index">
+                    <a href="#"><img src="images/logo.png" width="40" height="40"></a>
+                </div>
+                <a href="#" id="userPicA"><img id="userPic" src="images/userPic.png" width="43" style="float: right"
+                                               data-toggle="tooltip" data-placement="bottom" title="修改资料"/></a>
+            </div>
+        </nav>
+    </div>
+    <div id="mainBody">
+        <div id="mainDiv">
+            <div id="left-top">
+                <h3 class="f-left" style="	margin: 0;padding: 0;">动态</h3>
+                <span class="f-right btn btn-default"><img src="images/dTai.png" height="16px">发动态</span>
+            </div>
+
+            <div id="mainDivSon">
+
+                <ul>
+                    <!--动态-->
+                    <li v-for="(sh, index) in shares">
+                        <div class="userPic f-left">
+                            <a href="#">
+                                <img :src="sh.userHeadUrl" src="images/singer.jpg" height="45">
+                            </a>
+                        </div>
+                        <div class="userShare f-left font-14 f-c-6">
+                            <div class="type">
+                                <a href="#" class="font-14">{{sh.userName}}</a>
+                                <img src="images/V.png" height="11" v-if="sh.userVipState==1">
+                                <span>{{sh.videoOrMusic}}</span>
+                            </div>
+                            <div class="time font-12">
+                                <a href="#">{{sh.shareTime}}</a>
+                            </div>
+                            <div class="font-14 f-c-3 text" v-html="sh.shareText"></div>
+                            <img src="images/Android.png" height="250px">
+                            <div class="s-foot">
+                                <div class="f-left">
+                                <span><img src="images/location.png" height="14px"><i
+                                        class="f-c-d">{{sh.shareLocation}}</i></span>
+                                </div>
+                                <div class="f-right">
+                                <span><a class="f-c-gold" @click="addLikes(index)"><img src="images/thumbs.png"
+                                                                                        height="14px">(<i>1</i>)</a></span>
+                                    <span class="line f-c-gold shareOtherBtn">|</span>
+                                    <span><a class="f-c-gold" @click="shareForwardDivShow(index)">转发(<i>1</i>)<i
+                                            class="xiaoshi">{{sh.shareId}}</i></a></span>
+                                    <span class="line f-c-gold">|</span>
+                                    <span><a class="f-c-gold" @click="commentShare(index)">评论(<i>1</i>)</a></span>
+                                </div>
+
+                            </div>
+                            <!-- 评论 -->
+                            <div style="margin-top: 10px; background-color: #eee" v-if="sh.shareId == commentShareId"
+                                 class="commentDiv">
+                                <div class="share-text">
+                                    <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt"
+                                         id="editorCommentText"></div>
+                                </div>
+                                <div class="f-tde">
+                                    <div style="height: 30px; width: 100%;" id="editorCommentEmoji"
+                                         class="f-left"></div>
+                                    <div class="btns">
+                                        <a>
+                                            <div class="btn-share btn f-left" style="font-size: 16px"
+                                                 @click="commentToShare">评论
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div style="clear: both;"></div>
+                                <div class="commentDiv" v-for="com in shareComment">
+                                    <div class="userPic">
+                                        <a href="#" style="display:block;" class="f-left">
+                                            <img :src="com.userHeadUrl" height="35">
+                                        </a>
+                                        <div class="type f-left">
+                                            <a href="#" class="font-14">{{com.userName}}</a><i>:</i>
+                                            <div v-html="com.scText"></div>
+                                        </div>
+                                        <div style="clear: both"></div>
+                                    </div>
+                                    <div class="time font-12">
+                                        <a href="#">{{com.scTime}}</a>
+                                        <span style="margin-left: 250px">
+                                         <span><a class="f-c-gold"><img src="images/thumbs.png" height="14px">(<i>{{com.scLikes}}</i>)</a></span>
+                                    </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+
+        </div>
+
+
+    </div>
+    <div id="changeData">
+        <iframe src="changeData.html" frameborder="0" width="100%" height="400px"></iframe>
+    </div>
+</div>
+<!--分享动态-->
+<div class="popWindow" id="shareMusicDiv" >
+    <form action="/share/insertShare" method="post" enctype="multipart/form-data" class="xiaoshi"
+          id="shareMusicForm">
+        <input class="xiaoshi" style="display: none;" v-model="shareText" type="text" name="shareText">
+        <input class="xiaoshi" style="display: none;" name="userId" type="text" v-model="userId">
+    </form>
+    <div class="popWindow-top">
+        <div class="font-14 f-w-b f-c-e">分享</div>
+        <div class="f-right"><a><i class="font-14 f-c-gold XXX" @click="shareMusicX">X</i></a></div>
+    </div>
+    <div class="share-text">
+        <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt" id="editorText">
+
+        </div>
+        <div class="f-thide">
+            <div id="beforeChoseMusic">
+                <div style=" width: 40px;" id="editorPic" class="f-left"></div>
+                <div class="f-tde">
+                    <a href="#"><img src="images/Picture.png" height="15px" style="z-index: 10">
+                        <input type="file" id="fileupload" class="sharePic" name="file" form="shareMusicForm"></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div style="padding-left: 40px; line-height: 30px ; display: none " id="imgDiv">预览
+        <img id="img" style="margin-left: 20px" src="images/userPic.png" width="40px"></div>
+    <div class="btns">
+        <a>
+            <button class="btn btn-primary" style="font-size: 16px" type="submit" form="shareMusicForm">分享
+            </button>
+            <div class="btn btn-default" style="font-size: 16px" @click="shareMusicX">取消</div>
+        </a>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
+</script>
+</body>
+</html>

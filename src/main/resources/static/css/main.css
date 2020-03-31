@@ -1,38 +1,9 @@
-a {
-	text-decoration: none;
-	color: #666666;
-}
-a:hover{
-    text-decoration: underline;
-}
-body,
-h1,
-h2,
-h3,
-h4,
-img,
-iframe,
-ul{
-	margin: 0;
-	padding: 0;
-}
-li{
-	list-style-type: none;
-    width: auto;
-    height: auto;
-}
-i{
-    font-style: normal;
-}
 
 .f-right{
     float: right;
 }
 .f-left{
     float: left;
-}
-.btn:hover{
-    background-color: #eeeeee;
 }
 .font-14{
     font-size: 14px;
@@ -56,7 +27,7 @@ i{
     color: #aaaaaa;
 }
 .f-c-gold{
-    color: #0c73c2;
+    color: #308df4;
 }
 
 
@@ -81,16 +52,4 @@ i{
 }
 .f-w-b{
     font-weight: bold;
-}
-.btn{
-    display: block;
-    text-align: center;
-    font-size: 12px;
-    margin: 6px 0 0 10px;
-    overflow: hidden;
-    border-radius: 10px;
-    border: 1px solid #C4C4C4;
-    padding: 2px;
-    background-color: rgba(247,247,247,0.81);
-    box-shadow: 0 0 1px #747474;
 }

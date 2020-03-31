@@ -1,7 +1,11 @@
 package com.qingda.lr.mapper;
 
 import com.qingda.lr.entity.Share;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
+@Mapper
+@Repository
 public interface ShareMapper {
     int deleteByPrimaryKey(Integer shareId);
 
