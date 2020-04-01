@@ -4,6 +4,8 @@ import com.qingda.lr.entity.Share;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface ShareMapper {
@@ -18,4 +20,8 @@ public interface ShareMapper {
     int updateByPrimaryKeySelective(Share record);
 
     int updateByPrimaryKey(Share record);
+
+    List<Share> getShares(Integer pageNum);
+
+    Share getShareCommentAccount(Integer shareId);
 }

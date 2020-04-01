@@ -7,11 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 public class ShareServiceImpl implements ShareService {
 
     @Autowired
     ShareMapper shareMapper;
+
+    @Override
+    public List<Share> getAllShares(Integer pageNum) {
+        List<Share> shareList = shareMapper.getShares((pageNum-1)*3);
+        for (Share share: shareList) {
+            share.setShareCommentCount(shareMapper.getShareCommentAccount(share.getShareId()).getShareCommentCount());
+        }
+        return shareList;
+    }
 
     @Override
     public int insertShare(Share share, MultipartFile file) {

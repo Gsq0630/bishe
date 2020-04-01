@@ -13,7 +13,7 @@
     height: 100%;
     padding: 20px 30px;
     background-color: white;
-    border: 1px #C4C4C4 solid;
+    border: 1px #2837e94a solid;
     margin: auto;
 }
 ul{
@@ -26,8 +26,8 @@ li{
     height: auto;
 }
 #mainDivSon{
-    width: 700px;
-    margin: auto;
+    width: 630px;
+    margin: 20px auto 0 auto;
     height: 100%;
 }
 a {

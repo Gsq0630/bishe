@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qingda.lr.mapper.ShareMapper" >
-  <resultMap id="BaseResultMap" type="com.qingda.lr.entity.Share" >
+  <resultMap id="ShareResultMap" type="com.qingda.lr.entity.Share" >
     <id column="share_id" property="shareId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="share_text" property="shareText" jdbcType="VARCHAR" />
@@ -11,12 +11,28 @@
     <result column="share_likes" property="shareLikes" jdbcType="INTEGER" />
     <result column="share_from_id" property="shareFromId" jdbcType="INTEGER" />
     <result column="share_time" property="shareTime" jdbcType="TIMESTAMP" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_pic" property="userPic" jdbcType="VARCHAR" />
+    <result column="share_comment_count" property="shareCommentCount" jdbcType="INTEGER"/>
   </resultMap>
+  
+  <select id="getShares" resultMap="ShareResultMap" parameterType="java.lang.Integer">
+    select u.user_name,u.user_pic,s.share_id,
+      s.share_text,s.share_annex_url, s.share_location, s.share_likes,s.share_time
+        from share s ,user u where s.user_id = u.user_id  order by share_time desc limit #{pageNum} , 3
+  </select>
+
+  <select id="getShareCommentAccount" resultMap="ShareResultMap" parameterType="java.lang.Integer">
+        select count(share_id) as share_comment_count  from sharecomment where share_id = #{share_id}
+    </select>
+  
+  
+  
   <sql id="Base_Column_List" >
     share_id, user_id, share_text, share_title, share_annex_url, share_location, share_likes, 
     share_from_id, share_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="ShareResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from share

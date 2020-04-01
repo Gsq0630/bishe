@@ -17,6 +17,36 @@
     <script src="js/index.js"></script>
     <script src="js/insertShare.js"></script>
     <script>
+
+        function format(time, format) {
+            var t = new Date(time);
+            var tf = function (i) {
+                return (i < 10 ? '0' : '') + i
+            };
+            return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function (a) {
+                switch (a) {
+                    case 'yyyy':
+                        return tf(t.getFullYear());
+                        break;
+                    case 'MM':
+                        return tf(t.getMonth() + 1);
+                        break;
+                    case 'mm':
+                        return tf(t.getMinutes());
+                        break;
+                    case 'dd':
+                        return tf(t.getDate());
+                        break;
+                    case 'HH':
+                        return tf(t.getHours());
+                        break;
+                    case 'ss':
+                        return tf(t.getSeconds());
+                        break;
+                }
+            })
+        }
+
         $(function () {
 
             var userId = $.cookie("userId");
@@ -24,19 +54,65 @@
                 location.href = "index.html"
             }
 
+            $("#makeShare").click(function () {
+                $("#shareMusicDiv").show();
+            });
+
             //Vue
             var insertShare = new Vue({
                 el: "#shareMusicDiv",
                 data:{
                     shareText: "",
-                    userId:userId,
+                    userId:userId
                 },
                 methods: {
                     shareMusicX:function () {
-                        
+                        $("#shareMusicDiv").hide();
                     }
                 }
             });
+
+            var bigBox = new Vue({
+                el:"#mainBody",
+                data:{
+                    shares:[]
+                },
+                methods:{
+                    getShares:function () {
+                        $.ajax({
+                            url:"share/getAllShares",
+                            datatype:"text",
+                            type:"post",
+                            data: {
+                                pageNum: bigBox.pageNum
+                            },
+                            success:function (data) {
+                                for (var i = 0; i < data.length; i++){
+                                    bigBox.shares.push({
+                                        userName: data[i].userName,
+                                        shareTime: format(data[i].shareTime,'yyyy-MM-dd'),
+                                        shareAnnexUrl: data[i].shareAnnexUrl,
+                                        shareLocation: data[i].shareLocation,
+                                        shareCommentCount: data[i].shareCommentCount,
+                                        userHeadUrl: data[i].userHeadUrl,
+                                        shareText: data[i].shareText,
+                                        shareId: data[i].shareId,
+                                        shareLikes: data[i].shareLikes
+                                    });
+                                }
+                            }
+                        })
+                    },
+                    addLikes:function (index) {
+                        
+                    },
+                    commentShare:function (index) {
+
+                    }
+                }
+            });
+
+            bigBox.getShares();
 
             //wangEditor富文本编辑器
             var E = window.wangEditor;
@@ -69,7 +145,7 @@
     </script>
 </head>
 <body style="margin: 0; padding: 0 ">
-<div id="main" style="display: none">
+<div id="main">
     <div id="topDiv">
         <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
             <div class="container-fluid">
@@ -85,7 +161,7 @@
         <div id="mainDiv">
             <div id="left-top">
                 <h3 class="f-left" style="	margin: 0;padding: 0;">动态</h3>
-                <span class="f-right btn btn-default"><img src="images/dTai.png" height="16px">发动态</span>
+                <span class="f-right btn btn-default" id="makeShare"><img src="images/dTai.png" height="16px">发动态</span>
             </div>
 
             <div id="mainDivSon">
@@ -101,8 +177,6 @@
                         <div class="userShare f-left font-14 f-c-6">
                             <div class="type">
                                 <a href="#" class="font-14">{{sh.userName}}</a>
-                                <img src="images/V.png" height="11" v-if="sh.userVipState==1">
-                                <span>{{sh.videoOrMusic}}</span>
                             </div>
                             <div class="time font-12">
                                 <a href="#">{{sh.shareTime}}</a>
@@ -116,55 +190,52 @@
                                 </div>
                                 <div class="f-right">
                                 <span><a class="f-c-gold" @click="addLikes(index)"><img src="images/thumbs.png"
-                                                                                        height="14px">(<i>1</i>)</a></span>
+                                                                                        height="14px">(<i>{{sh.shareLikes}}</i>)</a></span>
                                     <span class="line f-c-gold shareOtherBtn">|</span>
-                                    <span><a class="f-c-gold" @click="shareForwardDivShow(index)">转发(<i>1</i>)<i
-                                            class="xiaoshi">{{sh.shareId}}</i></a></span>
-                                    <span class="line f-c-gold">|</span>
-                                    <span><a class="f-c-gold" @click="commentShare(index)">评论(<i>1</i>)</a></span>
+                                    <span><a class="f-c-gold" @click="commentShare(index)">评论(<i>{{sh.shareCommentCount}}</i>)</a></span>
                                 </div>
 
                             </div>
                             <!-- 评论 -->
-                            <div style="margin-top: 10px; background-color: #eee" v-if="sh.shareId == commentShareId"
-                                 class="commentDiv">
-                                <div class="share-text">
-                                    <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt"
-                                         id="editorCommentText"></div>
-                                </div>
-                                <div class="f-tde">
-                                    <div style="height: 30px; width: 100%;" id="editorCommentEmoji"
-                                         class="f-left"></div>
-                                    <div class="btns">
-                                        <a>
-                                            <div class="btn-share btn f-left" style="font-size: 16px"
-                                                 @click="commentToShare">评论
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
+<!--                            <div style="margin-top: 10px; background-color: #eee" v-if="sh.shareId == commentShareId"-->
+<!--                                 class="commentDiv">-->
+<!--                                <div class="share-text">-->
+<!--                                    <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt"-->
+<!--                                         id="editorCommentText"></div>-->
+<!--                                </div>-->
+<!--                                <div class="f-tde">-->
+<!--                                    <div style="height: 30px; width: 100%;" id="editorCommentEmoji"-->
+<!--                                         class="f-left"></div>-->
+<!--                                    <div class="btns">-->
+<!--                                        <a>-->
+<!--                                            <div class="btn-share btn f-left" style="font-size: 16px"-->
+<!--                                                 @click="commentToShare">评论-->
+<!--                                            </div>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
 
-                                <div style="clear: both;"></div>
-                                <div class="commentDiv" v-for="com in shareComment">
-                                    <div class="userPic">
-                                        <a href="#" style="display:block;" class="f-left">
-                                            <img :src="com.userHeadUrl" height="35">
-                                        </a>
-                                        <div class="type f-left">
-                                            <a href="#" class="font-14">{{com.userName}}</a><i>:</i>
-                                            <div v-html="com.scText"></div>
-                                        </div>
-                                        <div style="clear: both"></div>
-                                    </div>
-                                    <div class="time font-12">
-                                        <a href="#">{{com.scTime}}</a>
-                                        <span style="margin-left: 250px">
-                                         <span><a class="f-c-gold"><img src="images/thumbs.png" height="14px">(<i>{{com.scLikes}}</i>)</a></span>
-                                    </span>
-                                    </div>
+<!--                                <div style="clear: both;"></div>-->
+<!--                                <div class="commentDiv" v-for="com in shareComment">-->
+<!--                                    <div class="userPic">-->
+<!--                                        <a href="#" style="display:block;" class="f-left">-->
+<!--                                            <img :src="com.userHeadUrl" height="35">-->
+<!--                                        </a>-->
+<!--                                        <div class="type f-left">-->
+<!--                                            <a href="#" class="font-14">{{com.userName}}</a><i>:</i>-->
+<!--                                            <div v-html="com.scText"></div>-->
+<!--                                        </div>-->
+<!--                                        <div style="clear: both"></div>-->
+<!--                                    </div>-->
+<!--                                    <div class="time font-12">-->
+<!--                                        <a href="#">{{com.scTime}}</a>-->
+<!--                                        <span style="margin-left: 250px">-->
+<!--                                         <span><a class="f-c-gold"><img src="images/thumbs.png" height="14px">(<i>{{com.scLikes}}</i>)</a></span>-->
+<!--                                    </span>-->
+<!--                                    </div>-->
 
-                                </div>
-                            </div>
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </li>
 
@@ -189,7 +260,7 @@
     </form>
     <div class="popWindow-top">
         <div class="font-14 f-w-b f-c-e">分享</div>
-        <div class="f-right"><a><i class="font-14 f-c-gold XXX" @click="shareMusicX">X</i></a></div>
+        <div class="f-right"><a href="#"><i class="font-14 XXX" @click="shareMusicX">X</i></a></div>
     </div>
     <div class="share-text">
         <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt" id="editorText">
