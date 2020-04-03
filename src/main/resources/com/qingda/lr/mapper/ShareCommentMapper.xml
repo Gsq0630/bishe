@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qingda.lr.mapper.ShareCommentMapper" >
-  <resultMap id="BaseResultMap" type="com.qingda.lr.entity.ShareComment" >
+  <resultMap id="ShareCommentResultMap" type="com.qingda.lr.entity.ShareComment" >
     <id column="sc_id" property="scId" jdbcType="INTEGER" />
     <result column="share_id" property="shareId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
@@ -9,11 +9,23 @@
     <result column="sc_likes" property="scLikes" jdbcType="INTEGER" />
     <result column="sc_to_id" property="scToId" jdbcType="INTEGER" />
     <result column="sc_time" property="scTime" jdbcType="TIMESTAMP" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_pic" property="userPic" jdbcType="VARCHAR" />
   </resultMap>
+
+  <select id="selectByShareId" resultMap="ShareCommentResultMap" parameterType="java.lang.Integer">
+    select u.user_name,u.user_pic,sc.sc_id, sc.sc_text, sc.sc_likes, sc.sc_time from sharecomment sc, user u where sc.share_id = #{shareId} and sc.user_id = u.user_id order by sc.sc_time desc
+  </select>
+
+  <update id="updateCommentLikes" parameterType="java.lang.Integer">
+    update sharecomment set sc_likes = sc_likes + 1 where sc_id = #{scId}
+  </update>
+
+
   <sql id="Base_Column_List" >
     sc_id, share_id, user_id, sc_text, sc_likes, sc_to_id, sc_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="ShareCommentResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from sharecomment

@@ -24,4 +24,12 @@ public interface ShareMapper {
     List<Share> getShares(Integer pageNum);
 
     Share getShareCommentAccount(Integer shareId);
+
+    Share getLikeOrNot(String shareUserId);
+
+    int insertShareLike(String shareUserId);
+
+    int updateLike(Integer shareId);
+
+
 }

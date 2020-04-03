@@ -18,6 +18,8 @@
     <script src="js/insertShare.js"></script>
     <script>
 
+
+
         function format(time, format) {
             var t = new Date(time);
             var tf = function (i) {
@@ -49,14 +51,14 @@
 
         $(function () {
 
+
+
+
+
             var userId = $.cookie("userId");
             if (userId === undefined){
                 location.href = "index.html"
             }
-
-            $("#makeShare").click(function () {
-                $("#shareMusicDiv").show();
-            });
 
             //Vue
             var insertShare = new Vue({
@@ -71,48 +73,6 @@
                     }
                 }
             });
-
-            var bigBox = new Vue({
-                el:"#mainBody",
-                data:{
-                    shares:[]
-                },
-                methods:{
-                    getShares:function () {
-                        $.ajax({
-                            url:"share/getAllShares",
-                            datatype:"text",
-                            type:"post",
-                            data: {
-                                pageNum: bigBox.pageNum
-                            },
-                            success:function (data) {
-                                for (var i = 0; i < data.length; i++){
-                                    bigBox.shares.push({
-                                        userName: data[i].userName,
-                                        shareTime: format(data[i].shareTime,'yyyy-MM-dd'),
-                                        shareAnnexUrl: data[i].shareAnnexUrl,
-                                        shareLocation: data[i].shareLocation,
-                                        shareCommentCount: data[i].shareCommentCount,
-                                        userHeadUrl: data[i].userHeadUrl,
-                                        shareText: data[i].shareText,
-                                        shareId: data[i].shareId,
-                                        shareLikes: data[i].shareLikes
-                                    });
-                                }
-                            }
-                        })
-                    },
-                    addLikes:function (index) {
-                        
-                    },
-                    commentShare:function (index) {
-
-                    }
-                }
-            });
-
-            bigBox.getShares();
 
             //wangEditor富文本编辑器
             var E = window.wangEditor;
@@ -133,6 +93,151 @@
             //创建编辑器
             editor.create();
 
+            var bigBox = new Vue({
+
+                el:"#mainBody",
+                data:{
+                    shares:[],
+                    commentToShareText:""
+                },
+                methods:{
+                    getShares:function () {
+                        $.ajax({
+                            url:"share/getAllShares",
+                            datatype:"text",
+                            type:"post",
+                            data: {
+                                pageNum: bigBox.pageNum,
+                                userId: userId
+                            },
+                            success:function (data) {
+                                for (var i = 0; i < data.length; i++){
+                                    bigBox.shares.push({
+                                        userName: data[i].userName,
+                                        shareTime: format(data[i].shareTime,'yyyy-MM-dd'),
+                                        shareAnnexUrl: data[i].shareAnnexUrl,
+                                        shareLocation: data[i].shareLocation,
+                                        shareCommentCount: data[i].shareCommentCount,
+                                        userPic: data[i].userPic,
+                                        shareText: data[i].shareText,
+                                        shareId: data[i].shareId,
+                                        shareLikes: data[i].shareLikes,
+                                        likeOrNot: data[i].likeOrNot,
+                                        likeImage : data[i].likeOrNot === 0 ? "images/thumbs.png" : "images/thumbsAfter.png",
+                                        showComment: 0,
+                                        shareComment:[],
+                                        shareCommentText:""
+                                    });
+                                }
+                            }
+                        })
+                    },
+                    addLikes:function (index) {
+                        if (bigBox.shares[index].likeOrNot === 0){
+                            $.ajax({
+                                data:{
+                                    shareId : bigBox.shares[index].shareId,
+                                    userId : userId
+                                },
+                                type:"post",
+                                datatype:"text",
+                                url:"share/addLikes",
+                                success:function (data) {
+                                    if (data !== 0){
+                                        bigBox.shares[index].likeImage = "images/thumbsAfter.png";
+                                        var like = bigBox.shares[index].shareLikes;
+                                        bigBox.shares[index].shareLikes = like + 1;
+                                        bigBox.shares[index].likeOrNot = 1;
+                                    }
+                                }
+                            })
+                        }
+
+                    },
+                    getShareCommentByAjax:function(index){
+                        $.ajax({
+                            url:"share/getShareComment",
+                            data:{
+                                shareId : bigBox.shares[index].shareId,
+                                userId: userId
+                            },
+                            type:"post",
+                            datatype:"text",
+                            success:function (data) {
+                                var shareComment = [];
+                                for (var i = 0 ; i < data.length ; i++){
+                                    shareComment.push({
+                                        userName: data[i].userName,
+                                        userPic: data[i].userPic,
+                                        scTime: format(data[i].scTime,'yyyy-MM-dd'),
+                                        scLikes: data[i].scLikes,
+                                        scText: data[i].scText,
+                                        likeImage : data[i].likeOrNot === 0 ? "images/thumbs.png" : "images/thumbsAfter.png",
+                                        likeOrNot: data[i].likeOrNot,
+                                        scId:data[i].scId
+                                    });
+                                }
+                                bigBox.shares[index].shareComment = shareComment;
+                            }
+                        });
+                    },
+                    commentShare:function (index) {
+                        if (bigBox.shares[index].showComment === 1){
+                            bigBox.shares[index].showComment = 0;
+                        } else {
+                            bigBox.shares[index].showComment = 1;
+                            bigBox.getShareCommentByAjax(index)
+                        }
+                    },
+                    makeShare:function () {
+                        $("#shareMusicDiv").show();
+                    },
+                    commentToShare:function (index) {
+                        $.ajax({
+                            url:"share/insertShareComment",
+                            type:"post",
+                            data:{
+                                userId: userId,
+                                scText: bigBox.shares[index].shareCommentText,
+                                shareId: bigBox.shares[index].shareId
+                            },
+                            datatype:"text",
+                            success:function (data) {
+                                if (data === 1){
+                                    bigBox.getShareCommentByAjax(index);
+                                }
+                            }
+                        })
+                    },
+                    addCommentLikes:function (index, comIndex) {
+                        var shareComment = bigBox.shares[index].shareComment;
+                        if (shareComment[comIndex].likeOrNot === 0){
+
+                            $.ajax({
+                                data:{
+                                    scId : shareComment[comIndex].scId,
+                                    userId : userId
+                                },
+                                type:"post",
+                                datatype:"text",
+                                url:"share/addCommentLikes",
+                                success:function (data) {
+                                    if (data !== 0){
+                                        bigBox.shares[index].shareComment[comIndex].likeImage = "images/thumbsAfter.png";
+                                        var like = shareComment[comIndex].scLikes;
+                                        bigBox.shares[index].shareComment[comIndex].scLikes = like + 1;
+                                        bigBox.shares[index].shareComment[comIndex].likeOrNot = 1;
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+            });
+
+
+
+            bigBox.getShares();
 
             $("#fileupload").change(function () {
                 var file = $("#fileupload").prop('files')[0];
@@ -161,7 +266,7 @@
         <div id="mainDiv">
             <div id="left-top">
                 <h3 class="f-left" style="	margin: 0;padding: 0;">动态</h3>
-                <span class="f-right btn btn-default" id="makeShare"><img src="images/dTai.png" height="16px">发动态</span>
+                <span class="f-right btn btn-default" @click="makeShare"><img src="images/dTai.png" height="16px">发动态</span>
             </div>
 
             <div id="mainDivSon">
@@ -171,7 +276,7 @@
                     <li v-for="(sh, index) in shares">
                         <div class="userPic f-left">
                             <a href="#">
-                                <img :src="sh.userHeadUrl" src="images/singer.jpg" height="45">
+                                <img :src="sh.userPic" height="45">
                             </a>
                         </div>
                         <div class="userShare f-left font-14 f-c-6">
@@ -182,60 +287,57 @@
                                 <a href="#">{{sh.shareTime}}</a>
                             </div>
                             <div class="font-14 f-c-3 text" v-html="sh.shareText"></div>
-                            <img src="images/Android.png" height="250px">
+                            <img :src="sh.shareAnnexUrl" height="250px">
                             <div class="s-foot">
                                 <div class="f-left">
-                                <span><img src="images/location.png" height="14px"><i
+                                <span><img src="images/location.png" height="14px" v-if="sh.shareLocation != null"><i
                                         class="f-c-d">{{sh.shareLocation}}</i></span>
                                 </div>
-                                <div class="f-right">
-                                <span><a class="f-c-gold" @click="addLikes(index)"><img src="images/thumbs.png"
-                                                                                        height="14px">(<i>{{sh.shareLikes}}</i>)</a></span>
+                                <div class="f-right" id="right_bottom">
+                                <span><a href="#" class="f-c-gold" @click="addLikes(index)">
+                                    <img id="beforeLike" :src="sh.likeImage" height="14px">
+                                    (<i>{{sh.shareLikes}}</i>)</a></span>
                                     <span class="line f-c-gold shareOtherBtn">|</span>
-                                    <span><a class="f-c-gold" @click="commentShare(index)">评论(<i>{{sh.shareCommentCount}}</i>)</a></span>
+                                    <span><a href="#" class="f-c-gold" @click="commentShare(index)">评论(<i>{{sh.shareCommentCount}}</i>)</a></span>
                                 </div>
 
                             </div>
                             <!-- 评论 -->
-<!--                            <div style="margin-top: 10px; background-color: #eee" v-if="sh.shareId == commentShareId"-->
-<!--                                 class="commentDiv">-->
-<!--                                <div class="share-text">-->
-<!--                                    <div class="u-txt area j-flag" placeholder="一起聊聊吧~" data-action="txt"-->
-<!--                                         id="editorCommentText"></div>-->
-<!--                                </div>-->
-<!--                                <div class="f-tde">-->
-<!--                                    <div style="height: 30px; width: 100%;" id="editorCommentEmoji"-->
-<!--                                         class="f-left"></div>-->
-<!--                                    <div class="btns">-->
-<!--                                        <a>-->
-<!--                                            <div class="btn-share btn f-left" style="font-size: 16px"-->
-<!--                                                 @click="commentToShare">评论-->
-<!--                                            </div>-->
-<!--                                        </a>-->
-<!--                                    </div>-->
-<!--                                </div>-->
+                            <div style="margin-top: 10px; background-color: #eee" v-if="sh.showComment === 1"
+                                 class="commentDiv">
+                                <div class="share-text">
+                                    <textarea class="u-txt area j-flag" placeholder="一起聊聊吧~" v-model="sh.shareCommentText"></textarea>
+                                </div>
+                                <div class="f-tde">
+                                    <div class="btns">
+                                        <input type="text" name="commentToShare" style="display: none;" v-model="commentToShareText">
+                                        <div class="btn-share btn f-left" style="font-size: 16px"
+                                                 @click="commentToShare(index)">评论
+                                        </div>
+                                    </div>
+                                </div>
 
-<!--                                <div style="clear: both;"></div>-->
-<!--                                <div class="commentDiv" v-for="com in shareComment">-->
-<!--                                    <div class="userPic">-->
-<!--                                        <a href="#" style="display:block;" class="f-left">-->
-<!--                                            <img :src="com.userHeadUrl" height="35">-->
-<!--                                        </a>-->
-<!--                                        <div class="type f-left">-->
-<!--                                            <a href="#" class="font-14">{{com.userName}}</a><i>:</i>-->
-<!--                                            <div v-html="com.scText"></div>-->
-<!--                                        </div>-->
-<!--                                        <div style="clear: both"></div>-->
-<!--                                    </div>-->
-<!--                                    <div class="time font-12">-->
-<!--                                        <a href="#">{{com.scTime}}</a>-->
-<!--                                        <span style="margin-left: 250px">-->
-<!--                                         <span><a class="f-c-gold"><img src="images/thumbs.png" height="14px">(<i>{{com.scLikes}}</i>)</a></span>-->
-<!--                                    </span>-->
-<!--                                    </div>-->
+                                <div style="clear: both;"></div>
+                                <div class="commentDiv" v-for="(com, comIndex) in sh.shareComment">
+                                    <div class="userPic">
+                                        <a href="#" style="display:block; margin-right: 5px" class="f-left">
+                                            <img :src="com.userPic" height="35">
+                                        </a>
+                                        <div class="type f-left">
+                                            <a href="#" class="font-14">{{com.userName}}</a><i>:</i>
+                                            <div v-html="com.scText"></div>
+                                        </div>
+                                        <div style="clear: both"></div>
+                                    </div>
+                                    <div class="time font-12">
+                                        <a href="#">{{com.scTime}}</a>
+                                        <span style="margin-left: 250px; float: right">
+                                         <span><a class="f-c-gold" @click="addCommentLikes(index,comIndex)"><img :src="com.likeImage" height="14px">(<i>{{com.scLikes}}</i>)</a></span>
+                                    </span>
+                                    </div>
 
-<!--                                </div>-->
-<!--                            </div>-->
+                                </div>
+                            </div>
                         </div>
                     </li>
 

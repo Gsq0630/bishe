@@ -17,6 +17,36 @@ public class ShareComment {
 
     private Date scTime;
 
+    private String userName;
+
+    private String userPic;
+
+    private int likeOrNot;
+
+    public int getLikeOrNot() {
+        return likeOrNot;
+    }
+
+    public void setLikeOrNot(int likeOrNot) {
+        this.likeOrNot = likeOrNot;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserPic() {
+        return userPic;
+    }
+
+    public void setUserPic(String userPic) {
+        this.userPic = userPic;
+    }
+
     public Integer getScId() {
         return scId;
     }

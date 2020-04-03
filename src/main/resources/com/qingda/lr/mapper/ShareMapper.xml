@@ -14,8 +14,22 @@
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="user_pic" property="userPic" jdbcType="VARCHAR" />
     <result column="share_comment_count" property="shareCommentCount" jdbcType="INTEGER"/>
+    <result column="sharelike_id" property="likeOrNot" jdbcType="INTEGER"/>
   </resultMap>
-  
+
+
+  <update id="updateLike" parameterType="java.lang.Integer">
+    update share set share_likes = share_likes + 1 where share_id = #{shareId}
+  </update>
+
+  <insert id="insertShareLike" parameterType="java.lang.String">
+    insert into sharelike (share_user_id) value (#{shareUserId})
+  </insert>
+
+  <select id="getLikeOrNot" parameterType="java.lang.String" resultMap="ShareResultMap">
+       select count(sharelike_id) as sharelike_id from sharelike where share_user_id = #{shareUserId}
+  </select>
+
   <select id="getShares" resultMap="ShareResultMap" parameterType="java.lang.Integer">
     select u.user_name,u.user_pic,s.share_id,
       s.share_text,s.share_annex_url, s.share_location, s.share_likes,s.share_time

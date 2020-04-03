@@ -3,6 +3,7 @@ package com.qingda.lr.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.qingda.lr.entity.Share;
+import com.qingda.lr.entity.ShareComment;
 import com.qingda.lr.service.ShareService;
 import com.qingda.lr.until.GetPlaceByIp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,30 @@ public class ShareController {
     }
 
     @RequestMapping("/share/getAllShares")
-    public List<Share> getAllShares(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return shareService.getAllShares(pageNum);
+    public List<Share> getAllShares(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, Integer userId) {
+        return shareService.getAllShares(pageNum, userId);
     }
+
+    @RequestMapping("share/addLikes")
+    public int addLikes(Integer shareId, Integer userId){
+        return shareService.insertShareLike(shareId,userId);
+    }
+
+    @RequestMapping("share/getShareComment")
+    public List<ShareComment> getShareComment(Integer shareId, Integer userId){
+        return shareService.getShareComment(shareId, userId);
+    }
+
+    @RequestMapping("share/insertShareComment")
+    public int insertShareComment(ShareComment shareComment){
+        return shareService.insertShareComment(shareComment);
+    }
+
+    @RequestMapping("share/addCommentLikes")
+    public int addCommentLikes(Integer scId, Integer userId){
+        return shareService.insertCommentLikes(scId, userId);
+    }
+
+
 
 }

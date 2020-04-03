@@ -1,6 +1,8 @@
 package com.qingda.lr.service;
 
 import com.qingda.lr.entity.Share;
+import com.qingda.lr.entity.ShareComment;
+import com.qingda.lr.mapper.ShareCommentMapper;
 import com.qingda.lr.mapper.ShareMapper;
 import com.qingda.lr.until.FileUploadGsq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,43 @@ public class ShareServiceImpl implements ShareService {
     @Autowired
     ShareMapper shareMapper;
 
+    @Autowired
+    ShareCommentMapper shareCommentMapper;
+
     @Override
-    public List<Share> getAllShares(Integer pageNum) {
+    public int insertShareComment(ShareComment shareComment) {
+        return shareCommentMapper.insertSelective(shareComment);
+    }
+
+    @Override
+    public List<ShareComment> getShareComment(Integer shareId, Integer userId) {
+        List<ShareComment> shareComments =  shareCommentMapper.selectByShareId(shareId);
+        for (ShareComment s : shareComments) {
+            String shareCommentUserId = "shareCommentId:" + s.getScId() + "_" + "userId:" + userId;
+            s.setLikeOrNot(shareMapper.getLikeOrNot(shareCommentUserId).getLikeOrNot());
+        }
+        return shareComments;
+    }
+
+    @Override
+    public int insertCommentLikes(Integer scId, Integer userId) {
+        String shareUserId = "shareCommentId:" + scId + "_" + "userId:" + userId;
+        return shareMapper.insertShareLike(shareUserId) + shareCommentMapper.updateCommentLikes(scId);
+    }
+
+    @Override
+    public int insertShareLike(Integer shareId, Integer userId) {
+        String shareUserId = "shareId:" + shareId + "_" + "userId:" + userId;
+        return shareMapper.insertShareLike(shareUserId) + shareMapper.updateLike(shareId);
+    }
+
+    @Override
+    public List<Share> getAllShares(Integer pageNum, Integer userId) {
         List<Share> shareList = shareMapper.getShares((pageNum-1)*3);
         for (Share share: shareList) {
             share.setShareCommentCount(shareMapper.getShareCommentAccount(share.getShareId()).getShareCommentCount());
+            String shareUserId = "shareId:" + share.getShareId() + "_" + "userId:" + userId;
+            share.setLikeOrNot(shareMapper.getLikeOrNot(shareUserId).getLikeOrNot());
         }
         return shareList;
     }

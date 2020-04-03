@@ -27,6 +27,16 @@ public class Share {
 
     private String userPic;
 
+    private int likeOrNot;
+
+    public int getLikeOrNot() {
+        return likeOrNot;
+    }
+
+    public void setLikeOrNot(int likeOrNot) {
+        this.likeOrNot = likeOrNot;
+    }
+
     public String getUserPic() {
         return userPic;
     }
