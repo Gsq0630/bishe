@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ShareServiceImpl implements ShareService {
@@ -48,14 +50,20 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public List<Share> getAllShares(Integer pageNum, Integer userId) {
+    public Map<String, Object> getAllShares(Integer pageNum, Integer userId) {
         List<Share> shareList = shareMapper.getShares((pageNum-1)*3);
         for (Share share: shareList) {
             share.setShareCommentCount(shareMapper.getShareCommentAccount(share.getShareId()).getShareCommentCount());
             String shareUserId = "shareId:" + share.getShareId() + "_" + "userId:" + userId;
             share.setLikeOrNot(shareMapper.getLikeOrNot(shareUserId).getLikeOrNot());
         }
-        return shareList;
+        int count = shareMapper.getShareCount().getShareCount();
+        count = count%3>0 ? count/3+1 : count/3;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("pageCount",count);
+        resultMap.put("list", shareList);
+
+        return resultMap;
     }
 
     @Override

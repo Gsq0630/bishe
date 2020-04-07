@@ -27,7 +27,17 @@ public class Share {
 
     private String userPic;
 
+    private int shareCount;
+
     private int likeOrNot;
+
+    public int getShareCount() {
+        return shareCount;
+    }
+
+    public void setShareCount(int shareCount) {
+        this.shareCount = shareCount;
+    }
 
     public int getLikeOrNot() {
         return likeOrNot;

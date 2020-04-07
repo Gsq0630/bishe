@@ -5,11 +5,12 @@ import com.qingda.lr.entity.ShareComment;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ShareService {
     int insertShare(Share share, MultipartFile file);
 
-    List<Share> getAllShares(Integer pageNum, Integer userId);
+    Map<String, Object> getAllShares(Integer pageNum, Integer userId);
 
     int insertShareLike(Integer shareId, Integer userId);
 

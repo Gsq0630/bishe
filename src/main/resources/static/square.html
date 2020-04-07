@@ -98,10 +98,13 @@
                 el:"#mainBody",
                 data:{
                     shares:[],
-                    commentToShareText:""
+                    commentToShareText:"",
+                    pageCount:0,
+                    pageNum:1
                 },
                 methods:{
                     getShares:function () {
+                        bigBox.shares=[];
                         $.ajax({
                             url:"share/getAllShares",
                             datatype:"text",
@@ -110,7 +113,9 @@
                                 pageNum: bigBox.pageNum,
                                 userId: userId
                             },
-                            success:function (data) {
+                            success:function (map) {
+                                bigBox.pageCount = map.pageCount;
+                                var data = map.list;
                                 for (var i = 0; i < data.length; i++){
                                     bigBox.shares.push({
                                         userName: data[i].userName,
@@ -231,7 +236,20 @@
                                 }
                             })
                         }
-                    }
+                    },
+                    pageUp: function () {
+                        if (bigBox.pageNum > 1) {
+                            bigBox.pageNum = bigBox.pageNum - 1;
+                            bigBox.getShares();
+                        }
+                    },
+                    pageDown: function () {
+                        if (bigBox.pageNum < bigBox.pageCount) {
+                            bigBox.pageNum = bigBox.pageNum + 1;
+                            bigBox.getShares();
+                        }
+
+                    },
                 }
             });
 
@@ -342,6 +360,22 @@
                     </li>
 
                 </ul>
+                <div style="width: 500px;margin: auto">
+                    <ul>
+                        <li class="f-left">
+                            <a class="pages pages_upAndDown" @click="pageUp">上一页</a>
+                        </li>
+                        <li v-for="n in pageCount" class="f-left">
+                            <a :class="pageNum === n ? 'pages_act' : 'pages_btn'" @click="pageChange(n)">{{n}}</a>
+                        </li>
+                        <li class="f-left">
+                            <a class="pages pages_upAndDown" @click="pageDown">下一页</a>
+                        </li>
+                    </ul>
+                </div>
+
+
+
             </div>
 
 

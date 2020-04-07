@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ShareController {
@@ -37,7 +38,7 @@ public class ShareController {
     }
 
     @RequestMapping("/share/getAllShares")
-    public List<Share> getAllShares(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, Integer userId) {
+    public Map<String, Object> getAllShares(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, Integer userId) {
         return shareService.getAllShares(pageNum, userId);
     }
 

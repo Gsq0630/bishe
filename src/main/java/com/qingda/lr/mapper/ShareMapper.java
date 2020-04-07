@@ -31,5 +31,6 @@ public interface ShareMapper {
 
     int updateLike(Integer shareId);
 
+    Share getShareCount();
 
 }

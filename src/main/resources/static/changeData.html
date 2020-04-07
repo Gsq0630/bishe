@@ -15,11 +15,11 @@
 
         function check(){
             var name = /^[\w|\u4e00-\u9fa5]{3,8}$/;
-            if (!name.test($("#userName").val())){
+            if (!name.test($("input[name='userName']").val())){
                 alert("昵称格式不准确。");
                 return false;
             }
-            if ($("#userBirStr").val() == null) {
+            if ($("input[name='userBirStr']").val() == null) {
                 alert("生日不能为空。");
                 return  false;
             }
@@ -46,7 +46,7 @@
                 },
                 success: function (user) {
                     $("input[name = userName]").attr("value", user.userName);
-                    var sex = $(":radio[name= sex]");
+                    var sex = $(":radio[name= userSex]");
                     if (user.userSex === "男") {
                         sex.eq(0).attr("checked", true);
                         sex.eq(1).attr("checked", false);
@@ -75,7 +75,6 @@
                     }
                 },
                 messages: {
-
                 },
                 submitHandler:function () {
                     var newPassA = $("input[name='newPassA']").val();
@@ -94,18 +93,11 @@
                             },
                             datatype:"text",
                             success:function (data) {
-                                if (data === 1){
-
-                                }
                                 data === 1 ?  $("#changePassSuccess").show() : $("#changePassError").show();
                             }
                         })
                     }
                     }
-
-
-
-
             });
 
 
