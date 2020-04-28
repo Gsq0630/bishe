@@ -27,10 +27,6 @@
                     password: {
                         required: true,
                         regex: /^\w{8,16}$/
-                    },
-                    sex:{
-                    required:true,
-                    regex: /^男$|^女$/
                     }
                 },
                 messages: {
@@ -54,7 +50,7 @@
                         data:{
                             'userName':$("input[name='username']").val(),
                             'userPassword':$("input[name='password']").val(),
-                            'userSex':$("input[name='sex']").val(),
+                            'userSex':$("input[name='userSex']").val(),
                             'userBirStr':$("input[name='age']").val()},
                         datatype:"text",
                         success:function (data) {
@@ -65,17 +61,6 @@
                         }
                     })
                 }
-                // $("input[type='button']").click(function () {
-                //     $.ajax({
-                //         url:"http://localhost:8080/check",
-                //         type:"post",
-                //         data:{'username':$("input[name='username']").val(),'password':$("input[name='password']").val()},
-                //         datatype:"text",
-                //         success:function (data) {
-                //             data == true ? location.href="show.html":alert("密码或用户名错误");
-                //         }
-                //     })
-                // })
             });
         });
 
@@ -106,7 +91,10 @@
             <div class="account">
                 <div class="input-group">
                     <span class="input-group-addon">性别 </span>
-                    <input type="text" class="form-control" name="sex" placeholder="请输入性别，男或女">
+                    <div style="height: 58px; line-height: 58px; padding-left: 20px">
+                        <input type="radio" name="userSex" style="height: 13px;" value="男" checked="checked">男
+                        <input type="radio" name="userSex" style="height: 13px; margin-left: 20px" value="女"/>女
+                    </div>
                 </div>
             </div>
             <div class="account">
@@ -131,7 +119,6 @@
         <div style=" margin: 85px; width: 85px">
             <button class="btn btn-primary"><a style="color: white ;text-decoration:none;" href="login.html">前往登录</a></button>
         </div>
-
     </div>
 
 </div>

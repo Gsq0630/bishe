@@ -11,6 +11,17 @@
     <result column="user_account" property="userAccount" jdbcType="INTEGER" />
   </resultMap>
 
+
+  <select id="getAllFriends" resultMap="UserResultMap" parameterType="java.lang.Integer">
+    select u.user_name, u.user_id, u.user_pic from user u
+    where (user_id in
+    (select user_id_b from chat where user_id_a = #{userId,jdbcType=INTEGER} or user_id_b = #{userId,jdbcType=INTEGER})
+     or user_id in
+     (select user_id_a from chat where user_id_a = #{userId,jdbcType=INTEGER} or user_id_b = #{userId,jdbcType=INTEGER})
+     ) and user_id != #{userId,jdbcType=INTEGER}
+  </select>
+
+
   <update id="changeUserPass" parameterType="com.qingda.lr.entity.User" >
     update user
     set user_password = #{userNewPass,jdbcType=VARCHAR}

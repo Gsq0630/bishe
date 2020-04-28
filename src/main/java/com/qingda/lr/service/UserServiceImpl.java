@@ -66,18 +66,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insertUser(User user) {
-        int max=10000000;
-        int min=1000000;
+        //通过随机数生成账号，赋值到user对象中
+        int max = 10000000;
+        int min = 1000000;
         Random random = new Random();
-        int account = random.nextInt(max)%(max-min+1) + min;
+        int account = random.nextInt(max) % (max - min + 1) + min;
         user.setUserAccount(account);
+        //设置默认头像
         user.setUserPic("images/userPic.png");
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try{
+        //将日期字符串转成日期格式并赋值刀user对象中
+        //将user在mapper层通过MyBatis插入数据库中
+        try {
             user.setUserBirthday(getBirthday(user.getUserBirStr()));
             userMapper.insertSelective(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+            //若出现异常，如信息冲突等，则注册失败，返回账号为零
             account = 0;
         }
         return account;

@@ -4,6 +4,8 @@ import com.qingda.lr.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface UserMapper {
@@ -22,4 +24,6 @@ public interface UserMapper {
     User login(User user);
 
     int changeUserPass(User user);
+
+    List<User> getAllFriends(Integer userId);
 }

@@ -13,25 +13,162 @@
     <script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <script src="js/wangEditor.min.js"></script>
     <link href="css/wangEditor.css" rel="stylesheet">
-    <script src="js/mathching.js" ></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="js/jQueryRotate.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/index.js"></script>
     <style>
         .displayNone{
             display: none;
         }
     </style>
+    <script>
+
+
+
+        window.onload = function(){
+
+
+            var userId = $.cookie("userId");
+            if (userId === undefined){
+                location.href = "index.html"
+            }
+
+
+
+
+
+
+            var rotation = function (){
+                $("#img").rotate({
+                    angle:0,
+                    animateTo:360,
+                    callback: rotation,
+                    easing: function (x,t,b,c,d){
+                        return c*(t/d)+b;
+                    }
+                });
+            };
+            $("#toMatch").click(function () {
+                var button = $("#toMatch");
+                var t = button.text();
+                if (t === "开始匹配") {
+                    button.text("取消匹配");
+                    rotation();
+                }else if (t === "取消匹配"){
+                    $("#img").stopRotate();
+                    button.text("开始匹配");
+                }
+            });
+
+
+
+            var talkDiv = new Vue({
+                el:"#mainBody-2",
+                data:{
+                    chats:[],
+                    friends:[],
+                    userId:userId,
+                    talkWords:''
+                },
+                methods:{
+                    getChats:function () {
+                        $.ajax({
+                            url:"chat/getAllChats",
+                            data:{
+                                userId:userId
+                            },
+                            datatype:"text",
+                            type:"post",
+                            success:function (map) {
+                                var chats = map.chats;
+                                for (var i = 0; i < chats.length; i++){
+                                    talkDiv.chats.push({
+                                        chatText : chats[i].chatText,
+                                        sendOrGet: chats[i].userIdA == userId ? "send" : "get"
+                                    })
+                                }
+                                talkDiv.friends = map.friends;
+                            }
+                        })
+                    },
+                    send:function () {
+                        if(talkDiv.talkWords === undefined){
+                            // 消息为空时弹窗
+                            alert("消息不能为空");
+                            return;
+                        }
+                        var Words = document.getElementById("words");
+                        var str = '<div class="btalk"><span>' + talkDiv.talkWords +'</span></div>' ;
+                        Words.innerHTML = Words.innerHTML + str;
+                        editor.txt.clear();
+                    }
+
+                }
+            });
+
+
+
+
+
+            //wangEditor富文本编辑器
+            var E = window.wangEditor;
+            //这里的id为<div id="editor">中的id.
+            var editor = new E('#emoji', '#editorText');
+            editor.customConfig.menus = [
+                'emoticon' // 表情
+            ];
+            //监控音乐的文字，实时更新到shareText
+            editor.customConfig.onchange = function (html) {
+                talkDiv.talkWords = html;
+            };
+            //创建编辑器
+            editor.create();
+
+
+            var tag = "match";
+
+            $("#chat").click(function () {
+                if (tag === "chat") return;
+                var chat = $("#chat");
+                chat.css("background-color","#eeeeee");
+                chat.css("color","#6e8ef4");
+                var match = $("#match");
+                match.css("background-color","#6e8ef4");
+                match.css("color","#eeeeee");
+                $("#mainBody-1").hide();
+                $("#mainBody-2").show();
+                talkDiv.getChats();
+                tag = "chat";
+            });
+
+            $("#match").click(function () {
+                if (tag === "match") return;
+                var match = $("#match");
+                match.css("background-color","#eeeeee");
+                match.css("color","#6e8ef4");
+                var chat = $("#chat");
+                chat.css("background-color","#6e8ef4");
+                chat.css("color","#eeeeee");
+                $("#mainBody-2").hide();
+                $("#mainBody-1").show();
+                tag = "match";
+            });
+
+
+
+        }
+    </script>
 </head>
 <body style="margin: 0; padding: 0 ">
 <div id="main">
     <div id="topDiv">
         <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
             <div class="container-fluid">
-                <div class="navbar-header">
-                    <img src="images/logo.png" width="40" height="40">
+                <div class="navbar-header" id="index">
+                    <a href="#"><img src="images/logo.png" width="40" height="40"></a>
                 </div>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                    <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-                </ul>
+                <a href="#" id="userPicA"><img id="userPic" src="images/userPic.png" width="43" style="float: right;"/></a>
             </div>
         </nav>
     </div>
@@ -42,7 +179,7 @@
         </div>
 
         <div id="mainBody-1" >
-            <img src="images/111.png" class="zhuanzhuan" width="60px">
+            <img src="images/111.png" id="img" class="zhuanzhuan" style=";" width="60px">
             <div class="main-little">
                 <div class="choosePeo">
                     <div class="sex">
@@ -69,35 +206,40 @@
                     </div>
                 </div>
                 <div class="start" style="z-index: 100">
-                    <button type="button" class="btn  btn-default" style="z-index: 100">开始匹配</button>
+                    <button id="toMatch" type="button" class="btn  btn-default" style="z-index: 100">开始匹配</button>
                 </div>
         </div>
 
     </div>
-        <div id="mainBody-2" class="displayNone">
+        <div id="mainBody-2" class="displayNone" >
             <div style="float:left;" >
                 <ul class="nav nav-pills nav-stacked">
-                    <li class="active"><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
-                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
-                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
-                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
-                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
-                    <li><a href="#"><img src="images/logo.png" width="30" height="30"><span style=" margin-left: 5px; font-size: 15px;">东方不败</span></a></li>
-
+                    <li  v-for="(f, index) in friends">
+                        <div :class="index == 0 ? 'activeLi' : 'fixedLi'">
+                            <a href="#">
+                                <img :src="f.userPic" width="30" height="30">
+                                <span style=" margin-left: 5px; font-size: 15px;">{{f.userName}}</span></a>
+                        </div>
+                        </li>
                 </ul>
             </div>
-<!--            <iframe src="chat.html" frameborder="0" width="610px" height="510px" style="float:left;"></iframe>-->
+
+
             <div class="talk_con" style="float:left;">
                 <div class="talk_show" id="words">
-                    <div class="atalk"><span id="asay">A说：吃饭了吗？</span></div>
-                    <div class="btalk"><span id="bsay">B说：还没呢，你呢？</span></div>
+                    <ul style="margin: 0; padding:0">
+                        <li style="list-style: none" v-for="(c,index) in chats">
+                            <div class="atalk" v-if="c.sendOrGet === 'get'"><span id="asay">{{c.chatText}}</span></div>
+                            <div class="btalk" v-if="c.sendOrGet === 'send'"><span id="bsay">{{c.chatText}}</span></div>
+                        </li>
+                    </ul>
                 </div>
                 <div class="talk_input">
                     <div id="emoji" style="width: 30px;margin-top: 9px; float: left"></div>
                     <div placeholder="一起聊聊吧~" data-action="txt" id="editorText">
 
                     </div>
-                    <input type="button" value="发送" class="talk_sub" id="talksub" style="margin-top: 9px">
+                    <input type="button" value="发送" class="talk_sub" @click="send" id="talksub" style="margin-top: 9px">
                 </div>
             </div>
         </div>

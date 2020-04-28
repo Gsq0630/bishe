@@ -1,6 +1,7 @@
 #editorText{
     float: left;
     width: 450px;
+    height: 50px;
     margin-left: 10px;
     border: #777777 1px solid;
 }

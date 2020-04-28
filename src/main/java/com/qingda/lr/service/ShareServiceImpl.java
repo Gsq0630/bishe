@@ -62,7 +62,6 @@ public class ShareServiceImpl implements ShareService {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("pageCount",count);
         resultMap.put("list", shareList);
-
         return resultMap;
     }
 

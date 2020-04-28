@@ -66,4 +66,25 @@
     z-index: 0;
     margin: 10px 280px;
 }
+.activeLi{
+    width: 100px;
+    height: 50px;
+    background-color: #337ab7;
+    padding: 10px 15px;
+
+}
+.activeLi a{
+    color: #fff;
+
+}
+.fixedLi{
+    width: 100px;
+    height: 50px;
+    background-color: #fff;
+    padding: 10px 15px;
+}
+.fixedLi a{
+    color: #337ab7;
+
+}
 
