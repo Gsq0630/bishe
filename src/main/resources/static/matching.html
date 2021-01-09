@@ -24,8 +24,6 @@
     </style>
     <script>
 
-
-
         window.onload = function(){
 
 
@@ -34,49 +32,23 @@
                 location.href = "index.html"
             }
 
-
-
-
-
-
-            var rotation = function (){
-                $("#img").rotate({
-                    angle:0,
-                    animateTo:360,
-                    callback: rotation,
-                    easing: function (x,t,b,c,d){
-                        return c*(t/d)+b;
-                    }
-                });
-            };
-            $("#toMatch").click(function () {
-                var button = $("#toMatch");
-                var t = button.text();
-                if (t === "开始匹配") {
-                    button.text("取消匹配");
-                    rotation();
-                }else if (t === "取消匹配"){
-                    $("#img").stopRotate();
-                    button.text("开始匹配");
-                }
-            });
-
-
-
             var talkDiv = new Vue({
                 el:"#mainBody-2",
                 data:{
                     chats:[],
                     friends:[],
                     userId:userId,
-                    talkWords:''
+                    talkWords:'',
+                    firstId:0
                 },
                 methods:{
                     getChats:function () {
+                        talkDiv.chats = [];
                         $.ajax({
                             url:"chat/getAllChats",
                             data:{
-                                userId:userId
+                                userId:userId,
+                                firstId:talkDiv.firstId
                             },
                             datatype:"text",
                             type:"post",
@@ -89,27 +61,79 @@
                                     })
                                 }
                                 talkDiv.friends = map.friends;
+                                talkDiv.firstId = talkDiv.friends[0].userId;
                             }
                         })
                     },
                     send:function () {
-                        if(talkDiv.talkWords === undefined){
-                            // 消息为空时弹窗
-                            alert("消息不能为空");
-                            return;
-                        }
-                        var Words = document.getElementById("words");
-                        var str = '<div class="btalk"><span>' + talkDiv.talkWords +'</span></div>' ;
-                        Words.innerHTML = Words.innerHTML + str;
-                        editor.txt.clear();
+                        $.ajax({
+                            url:"chat/insertChat",
+                            data:{
+                                chatText:talkDiv.talkWords,
+                                userIdA:userId,
+                                userIdB:talkDiv.firstId
+                            },
+                            datatype:"text",
+                            type:"post",
+                            success:function (data) {
+                                if (data === 1){
+                                    talkDiv.chats.push({
+                                        chatText: talkDiv.talkWords,
+                                        sendOrGet:"send"
+                                    });
+                                    // var Words = document.getElementById("words");
+                                    // var str = '<div class="btalk"><span>' + talkDiv.talkWords +'</span></div>' ;
+                                    // Words.innerHTML = Words.innerHTML + str;
+                                    talkDiv.talkWords = '';
+                                    editor.txt.clear();
+                                }
+                            }
+                        });
+
+                    },
+                    chooseFriend:function (index) {
+
+                        talkDiv.firstId = talkDiv.friends[index].userId;
+                        talkDiv.getChats();
                     }
 
                 }
             });
 
-
-
-
+            var rotation = function (){
+                $("#img").rotate({
+                    angle:0,
+                    animateTo:360,
+                    callback: rotation,
+                    easing: function (x,t,b,c,d){
+                        return c*(t/d)+b;
+                    }
+                });
+            };
+            rotation();
+            $("#toMatch").click(function () {
+                $.ajax({
+                    url:"chat/matchFriend",
+                    data:{
+                        userAge:$("#chooseAge").val() ,
+                        userSex:$("#chooseSex").val(),
+                        userHobby:$("#chooseHobby").val(),
+                        userId:userId
+                    },
+                    type:"post",
+                    datatype:"text",
+                    success:function (user) {
+                        if (user === ''){
+                            alert("符合此条件的用户太少，换个条件试试吧");
+                            return;
+                        }
+                        talkDiv.chats = [];
+                        talkDiv.firstId = user.userId;
+                        $('#chat').trigger("click");
+                        tag = "chat";
+                    }
+                })
+            });
 
             //wangEditor富文本编辑器
             var E = window.wangEditor;
@@ -127,7 +151,6 @@
 
 
             var tag = "match";
-
             $("#chat").click(function () {
                 if (tag === "chat") return;
                 var chat = $("#chat");
@@ -166,9 +189,10 @@
         <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
             <div class="container-fluid">
                 <div class="navbar-header" id="index">
-                    <a href="#"><img src="images/logo.png" width="40" height="40"></a>
+                    <a href="index.html"><img src="images/logo.png" width="40" height="40"></a>
                 </div>
-                <a href="#" id="userPicA"><img id="userPic" src="images/userPic.png" width="43" style="float: right;"/></a>
+                <a href="#" id="userPicA"><img id="userPic" src="images/userPic.png" width="43" style="float: right"
+                                               data-toggle="tooltip" data-placement="bottom" title="修改资料"/></a>
             </div>
         </nav>
     </div>
@@ -186,10 +210,10 @@
                         性别:
                     </div>
                     <div class="col-lg-2">
-                        <select class="form-control" οnchange="selectOnchang(this)" style="width:90px">
+                        <select class="form-control" id="chooseSex" οnchange="selectOnchang(this)" style="width:90px">
+                            <option>都行</option>
                             <option>男</option>
                             <option>女</option>
-                            <option>都行</option>
                         </select>
                     </div>
                 </div>
@@ -198,10 +222,29 @@
                         年龄:
                     </div>
                     <div class="col-lg-2">
-                        <select class="form-control" οnchange="selectOnchang(this)" style="width:90px">
+                        <select class="form-control" id="chooseAge" οnchange="selectOnchang(this)" style="width:90px">
+                            <option>都行</option>
                             <option>18-20</option>
                             <option>20-30</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="choosePeo">
+                    <div class="sex">
+                        爱好:
+                    </div>
+                    <div class="col-lg-2">
+                        <select class="form-control" id="chooseHobby" οnchange="selectOnchang(this)" style="width:90px">
                             <option>都行</option>
+                            <option>运动</option>
+                            <option>旅游</option>
+                            <option>音乐</option>
+                            <option>乐器</option>
+                            <option>舞蹈</option>
+                            <option>阅读</option>
+                            <option>电影</option>
+                            <option>桌游</option>
+                            <option>游戏</option>
                         </select>
                     </div>
                 </div>
@@ -215,7 +258,7 @@
             <div style="float:left;" >
                 <ul class="nav nav-pills nav-stacked">
                     <li  v-for="(f, index) in friends">
-                        <div :class="index == 0 ? 'activeLi' : 'fixedLi'">
+                        <div :class="index == 0 ? 'activeLi' : 'fixedLi'"  @click="chooseFriend(index)">
                             <a href="#">
                                 <img :src="f.userPic" width="30" height="30">
                                 <span style=" margin-left: 5px; font-size: 15px;">{{f.userName}}</span></a>
@@ -229,8 +272,8 @@
                 <div class="talk_show" id="words">
                     <ul style="margin: 0; padding:0">
                         <li style="list-style: none" v-for="(c,index) in chats">
-                            <div class="atalk" v-if="c.sendOrGet === 'get'"><span id="asay">{{c.chatText}}</span></div>
-                            <div class="btalk" v-if="c.sendOrGet === 'send'"><span id="bsay">{{c.chatText}}</span></div>
+                            <div class="atalk" v-if="c.sendOrGet === 'get'"><span id="asay" v-html="c.chatText"></span></div>
+                            <div class="btalk" v-if="c.sendOrGet === 'send'"><span id="bsay" v-html="c.chatText"></span></div>
                         </li>
                     </ul>
                 </div>
@@ -243,10 +286,16 @@
                 </div>
             </div>
         </div>
-
-
-
+    </div>
+    <div id="changeData">
+        <iframe src="changeData.html" frameborder="0" width="100%" height="400px"></iframe>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
+</script>
 </body>
 </html>

@@ -17,4 +17,6 @@ public interface  UserService {
     int changeUserData(User user, MultipartFile file);
 
     int changeUserPass(User user);
+
+    int updateHobby(User user);
 }

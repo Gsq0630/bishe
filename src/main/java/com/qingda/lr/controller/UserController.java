@@ -53,4 +53,9 @@ public class UserController {
          return userService.changeUserPass(user);
     }
 
+    @RequestMapping("/user/changeHobby")
+    public int updataHobby(User user){
+        return userService.updateHobby(user);
+    }
+
 }

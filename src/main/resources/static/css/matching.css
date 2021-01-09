@@ -11,7 +11,7 @@
     /*background: url("../images/111.png");*/
     background-size: cover;
     margin: auto;
-    padding-top: 170px;
+    padding-top: 130px;
 }
 .sex{
     float: left;
@@ -67,7 +67,7 @@
     margin: 10px 280px;
 }
 .activeLi{
-    width: 100px;
+    width: 130px;
     height: 50px;
     background-color: #337ab7;
     padding: 10px 15px;
@@ -78,7 +78,7 @@
 
 }
 .fixedLi{
-    width: 100px;
+    width: 130px;
     height: 50px;
     background-color: #fff;
     padding: 10px 15px;

@@ -11,7 +11,7 @@
   <select id="getAllChats" resultMap="ChatResultMap" parameterType="java.lang.Integer">
     select c.user_id_a, c.user_id_b, c.chat_text from chat c
     where (user_id_a = #{param1,jdbcType=INTEGER} and user_id_b = #{param2,jdbcType=INTEGER})
-    or (user_id_b = #{param1,jdbcType=INTEGER} and user_id_a = #{param2,jdbcType=INTEGER})
+    or (user_id_b = #{param1,jdbcType=INTEGER} and user_id_a = #{param2,jdbcType=INTEGER}) order by c.chat_time asc
   </select>
 
   <insert id="insert" parameterType="com.qingda.lr.entity.Chat" >

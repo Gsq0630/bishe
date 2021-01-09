@@ -21,6 +21,46 @@ public class User {
 
     private String userNewPass;
 
+    private String userHobby;
+
+    private String userAge;
+
+    private Date mathStart;
+
+    private Date mathStop;
+
+    public Date getMathStart() {
+        return mathStart;
+    }
+
+    public void setMathStart(Date mathStart) {
+        this.mathStart = mathStart;
+    }
+
+    public Date getMathStop() {
+        return mathStop;
+    }
+
+    public void setMathStop(Date mathStop) {
+        this.mathStop = mathStop;
+    }
+
+    public String getUserAge() {
+        return userAge;
+    }
+
+    public void setUserAge(String userAge) {
+        this.userAge = userAge;
+    }
+
+    public String getUserHobby() {
+        return userHobby;
+    }
+
+    public void setUserHobby(String userHobby) {
+        this.userHobby = userHobby;
+    }
+
     public String getUserNewPass() {
         return userNewPass;
     }

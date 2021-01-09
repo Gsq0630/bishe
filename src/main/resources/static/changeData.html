@@ -14,7 +14,7 @@
     <script>
 
         function check(){
-            var name = /^[\w|\u4e00-\u9fa5]{3,8}$/;
+            var name = /^[\w|\u4e00-\u9fa5]{1,8}$/;
             if (!name.test($("input[name='userName']").val())){
                 alert("昵称格式不准确。");
                 return false;
@@ -108,20 +108,71 @@
             });
 
             $(".changePassword").hide();
+            $(".changeHobby").hide();
 
             $("#changeData").click(function () {
                 $("#changeData").addClass("active");
                 $("#changePassword").removeClass("active");
+                $("#changeHobby").removeClass("active");
                 $(".changeData").show();
                 $(".changePassword").hide();
+                $(".changeHobby").hide();
             });
 
             $("#changePassword").click(function () {
                 $("#changePassword").addClass("active");
                 $("#changeData").removeClass("active");
+                $("#changeHobby").removeClass("active");
                 $(".changeData").hide();
                 $(".changePassword").show();
+                $(".changeHobby").hide();
             });
+
+            $("#changeHobby").click(function () {
+                $("#changeHobby").addClass("active");
+                $("#changeData").removeClass("active");
+                $("#changePassword").removeClass("active");
+                $(".changeData").hide();
+                $(".changePassword").hide();
+                $(".changeHobby").show();
+            });
+
+            var hobbies = "";
+
+            $(".checkbox_label").click(function () {
+                var text = $(this).text();
+                if (hobbies.search(text) === -1){
+                    hobbies = hobbies + "," + text;
+                    $(this).removeClass("btn-default");
+                    $(this).addClass("btn-success");
+                }else {
+                    hobbies = hobbies.replace(new RegExp("," + text,'g'),"");
+                    $(this).removeClass("btn-success");
+                    $(this).addClass("btn-default");
+                }
+            });
+
+            $("#saveHobby").click(function () {
+                $.ajax({
+                    url:"user/changeHobby",
+                    data:{
+                        userId:userId,
+                        userHobby:hobbies
+                    },
+                    type:"post",
+                    datatype:"text",
+                    success:function (data) {
+                        if (data === 1){
+                            $("#changeHobbySuccess").show();
+                            $("#saveHobby").hide();
+                            $("#chooseHobby").hide();
+                        } else {
+                            alert("保存失败，请稍后再试。");
+                        }
+                    }
+                })
+            })
+
         })
     </script>
 </head>
@@ -131,14 +182,14 @@
 <ul class="nav nav-tabs">
     <li class="active" id="changeData"><a href="#">修改个人资料</a></li>
     <li id="changePassword"><a href="#">修改密码</a></li>
-
+    <li id="changeHobby"><a href="#">修改兴趣爱好</a></li>
 </ul>
 <form id="myForm" class="bs-example bs-example-form changeData" onsubmit="return check()" role="form" action="/user/changeUserData" method="post" enctype="multipart/form-data">
     <div class="account">
         <div class="input-group">
             <input type="text" name="userId" style="display: none">
             <span class="input-group-addon">昵称 </span>
-            <input type="text" class="form-control" name="userName" placeholder="昵称格式为3-8个字符">
+            <input type="text" class="form-control " name="userName" placeholder="昵称格式为3-8个字符">
         </div>
     </div>
     <div class="account">
@@ -190,7 +241,51 @@
     <div id="newPassError" class="tips" style="display: none"><p style="color: #0c73c2; font-size: 30px">两次新密码不一致</p></div>
 </form>
 
+<div class="changeHobby">
 
+    <ul id="chooseHobby">
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox1" style="display: none"/>
+            <label for="checkbox1" class="btn btn-default checkbox_label">运动</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox2" style="display: none"/>
+            <label for="checkbox2" class="btn btn-default checkbox_label">旅游</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox3" style="display: none"/>
+            <label for="checkbox3" class="btn btn-default checkbox_label">音乐</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox4" style="display: none"/>
+            <label for="checkbox4" class="btn btn-default checkbox_label">乐器</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox5" style="display: none"/>
+            <label for="checkbox5" class="btn btn-default checkbox_label">舞蹈</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox6" style="display: none"/>
+            <label for="checkbox6" class="btn btn-default checkbox_label">阅读</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox7" style="display: none"/>
+            <label for="checkbox7" class="btn btn-default checkbox_label">电影</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox8" style="display: none"/>
+            <label for="checkbox8" class="btn btn-default checkbox_label">桌游</label>
+        </li>
+        <li>
+            <input type="checkbox" name="hobby" id="checkbox9" style="display: none"/>
+            <label for="checkbox9" class="btn btn-default checkbox_label">游戏</label>
+        </li>
+    </ul>
+    <button id="saveHobby" class="btn btn-primary" style="margin: 30px 130px">保存修改</button>
+
+    <div id="changeHobbySuccess" class="tips" style="display: none"><p style="color: #0c73c2; font-size: 30px">修改成功</p></div>
+
+</div>
 
 
 <script>

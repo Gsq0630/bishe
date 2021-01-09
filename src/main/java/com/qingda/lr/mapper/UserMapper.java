@@ -26,4 +26,6 @@ public interface UserMapper {
     int changeUserPass(User user);
 
     List<User> getAllFriends(Integer userId);
+
+    User mathFriend(User user);
 }

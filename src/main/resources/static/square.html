@@ -206,6 +206,7 @@
                                 if (data === 1){
                                     bigBox.getShareCommentByAjax(index);
                                 }
+                                bigBox.shares[index].shareCommentText = '';
                             }
                         })
                     },
@@ -268,7 +269,7 @@
         <nav class="navbar navbar-default" role="navigation" style="background-color: rgba(85,85,255,0);border: none">
             <div class="container-fluid">
                 <div class="navbar-header" id="index">
-                    <a href="#"><img src="images/logo.png" width="40" height="40"></a>
+                    <a href="index.html"><img src="images/logo.png" width="40" height="40"></a>
                 </div>
                 <a href="#" id="userPicA"><img id="userPic" src="images/userPic.png" width="43" style="float: right"
                                                data-toggle="tooltip" data-placement="bottom" title="修改资料"/></a>

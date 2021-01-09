@@ -9,7 +9,34 @@
     <result column="user_pic" property="userPic" jdbcType="VARCHAR" />
     <result column="user_password" property="userPassword" jdbcType="VARCHAR" />
     <result column="user_account" property="userAccount" jdbcType="INTEGER" />
+    <result column="user_hobby" property="userHobby" jdbcType="VARCHAR" />
   </resultMap>
+
+  <select id="mathFriend" resultMap="UserResultMap" parameterType="com.qingda.lr.entity.User">
+    select u.user_name, u.user_id, u.user_pic from user u
+    where 1=1
+    <if test="userSex != null">
+      and u.user_sex = #{userSex}
+    </if>
+    <if test="userHobby != null">
+     and u.user_hobby like "%${userHobby}%"
+    </if>
+    <if test="mathStart != null and mathStop != null">
+     and u.user_birthday  &gt;=  #{mathStart} and u.user_birthday  &lt;= #{mathStop}
+    </if>
+
+    and u.user_id not in (
+    select  u.user_id from user u
+    where (user_id in
+    (select user_id_b from chat where user_id_a = #{userId,jdbcType=INTEGER} or user_id_b = #{userId,jdbcType=INTEGER})
+    or user_id in
+    (select user_id_a from chat where user_id_a = #{userId,jdbcType=INTEGER} or user_id_b = #{userId,jdbcType=INTEGER})
+    ) and user_id != #{userId,jdbcType=INTEGER}
+    )
+
+
+    order by rand() limit 1
+  </select>
 
 
   <select id="getAllFriends" resultMap="UserResultMap" parameterType="java.lang.Integer">
@@ -122,6 +149,9 @@
       </if>
       <if test="userAccount != null" >
         user_account = #{userAccount,jdbcType=INTEGER},
+      </if>
+      <if test="userHobby != null" >
+        user_hobby = #{userHobby,jdbcType=INTEGER},
       </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}

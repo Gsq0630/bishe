@@ -25,3 +25,17 @@
     height: 130px;
     width: 130px;
 }
+.changeHobby{
+    margin: 20px 0 0 20px;
+    width: 350px;
+    height: 300px;
+}
+#chooseHobby{
+    margin: 0;
+    padding: 0;
+}
+#chooseHobby li{
+    list-style: none;
+    margin: 10px 30px;
+    float: left;
+}

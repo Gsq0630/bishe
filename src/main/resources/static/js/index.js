@@ -2,13 +2,15 @@ $(function () {
 
     $("#changeData").hide();
     var userId = $.cookie("userId");
-    if (userId === undefined){
+    if (userId === undefined || userId === "null"){
         userId = 0;
         $("#userPicA").hide();
+        $("#quitA").hide();
         $("#reg_login").show();
     }else{
         $("#reg_login").hide();
         $("#userPicA").show();
+        $("#quitA").show();
         $.ajax({
             url:"http://localhost:8080/user/getUserPic",
             type: "post",
@@ -31,4 +33,9 @@ $(function () {
             $("#mainBody").show();
         })
     }
+
+    $("#quitA").click(function () {
+        $.cookie("userId",null);
+        window.location.href = "index.html"
+    })
 });

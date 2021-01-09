@@ -22,7 +22,7 @@
                 rules: {
                     username: {
                         required: true,
-                        regex: /^[\w|\u4e00-\u9fa5]{3,8}$/
+                        regex: /^[\w|\u4e00-\u9fa5]{1,8}$/
                     },
                     password: {
                         required: true,
@@ -85,7 +85,7 @@
             <div class="account top">
                 <div class="input-group">
                     <span class="input-group-addon">昵称 </span>
-                    <input type="text" class="form-control" name="username" placeholder="昵称格式为3-8个字符">
+                    <input type="text" class="form-control" name="username" placeholder="昵称格式为1-8个字符">
                 </div>
             </div>
             <div class="account">
@@ -98,11 +98,11 @@
                 </div>
             </div>
             <div class="account">
-                <div class="input-group">
-                    <span class="input-group-addon">生日 </span>
-                    <input type="date" style="width: 245px" name="age" placeholder="请输入生日"/>
-                </div>
+            <div class="input-group">
+                <span class="input-group-addon">生日 </span>
+                <input type="date" style="width: 245px" name="age" placeholder="请输入生日"/>
             </div>
+        </div>
             <div class="account down">
                 <div class="input-group">
                     <span class="input-group-addon">密码 </span>

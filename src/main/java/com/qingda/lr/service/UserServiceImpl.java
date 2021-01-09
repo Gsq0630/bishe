@@ -92,4 +92,8 @@ public class UserServiceImpl implements UserService {
             return sdf.parse(birStr);
     }
 
+    @Override
+    public int updateHobby(User user) {
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
 }
